@@ -6,7 +6,7 @@ description: Greeter indexer
 contracts:
   - name: Factory
     abi_file_path: ./abis/factory.json
-    handler: ./src/EventHandlers.ts
+    handler: ./src/event-handlers/Factory.ts
     events:
       - event: PoolCreated
         isAsync: true
