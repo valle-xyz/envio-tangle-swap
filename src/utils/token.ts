@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
-import ERC20Abi from './../abis/ERC20.json'
-import { viemClient } from './viem'
+import ERC20Abi from '../../abis/ERC20.json'
+import { viemClient } from '../viem'
 export async function fetchTokenSymbol (tokenAddress: string): Promise<string> {
   const symbolResult = await viemClient.readContract({
     address: tokenAddress as `0x${string}`,
