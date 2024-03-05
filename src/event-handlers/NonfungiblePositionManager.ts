@@ -2,9 +2,11 @@ import {
   NonfungiblePositionManagerContract_IncreaseLiquidity_loader,
   NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync,
   NonfungiblePositionManagerContract_DecreaseLiquidity_loader,
-  NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync
+  NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync,
+  NonfungiblePositionManagerContract_Transfer_loader,
+  NonfungiblePositionManagerContract_Transfer_handler
 } from '../../generated/src/Handlers.gen'
-import { type PositionEntity, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs, type eventLog } from '../src/Types.gen'
+import { type PositionEntity, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs, type eventLog, type NonfungiblePositionManagerContract_TransferEvent_handlerContext, type NonfungiblePositionManagerContract_TransferEvent_eventArgs } from '../src/Types.gen'
 import { ADDRESS_ZERO, FACTORY_ADDRESS, POSITION_MANAGER_ADDRESS } from '../utils/constants'
 import { viemClient } from '../viem'
 import NonfungiblePositionManagerAbi from '../../abis/NonfungiblePositionManager.json'
@@ -87,7 +89,30 @@ NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync(async ({ event
   savePositionSnapshot(position, event, context)
 })
 
-async function getPosition (event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs>, context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync): Promise<PositionEntity | null> {
+NonfungiblePositionManagerContract_Transfer_loader(({ event, context }) => {
+  context.Position.load(event.params.tokenId.toString(), {})
+})
+
+NonfungiblePositionManagerContract_Transfer_handler(async ({ event, context }) => {
+  const position = await getPosition(event, context)
+
+  // position was not able to be fetched
+  if (position == null) {
+    context.log.error('Position not found ' + event.params.tokenId.toString())
+    return
+  }
+
+  const newPosition = {
+    ...position,
+    owner: event.params.to
+  }
+
+  context.Position.set(newPosition)
+
+  savePositionSnapshot(position, event, context)
+})
+
+async function getPosition (event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs> | eventLog<NonfungiblePositionManagerContract_TransferEvent_eventArgs>, context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_TransferEvent_handlerContext): Promise<PositionEntity | null> {
   const tokenId = event.params.tokenId.toString()
   let position = await context.Position.get(tokenId)
   if (position === undefined) {
@@ -175,7 +200,10 @@ async function getPosition (event: eventLog<NonfungiblePositionManagerContract_I
 //   return position
 // }
 
-function savePositionSnapshot (position: PositionEntity, event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs>, context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync): void {
+function savePositionSnapshot (position: PositionEntity,
+  event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs> | eventLog<NonfungiblePositionManagerContract_TransferEvent_eventArgs>,
+  context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_TransferEvent_handlerContext
+): void {
   context.PositionSnapshot.set({
     id: position.id.concat('#').concat(event.blockNumber.toString()),
     owner: position.owner,

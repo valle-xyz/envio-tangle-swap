@@ -31,6 +31,10 @@ contracts:
           - name: Position
           - name: PositionSnapshot
           - name: Token
+      - event: Transfer
+        requiredEntities:
+          - name: Position
+          - name: PositionSnapshot
 networks:
   - id: 148 # Shimmer
     start_block: 35196
