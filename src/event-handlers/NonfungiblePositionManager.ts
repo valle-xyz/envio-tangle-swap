@@ -112,6 +112,8 @@ NonfungiblePositionManagerContract_Transfer_handler(async ({ event, context }) =
   savePositionSnapshot(position, event, context)
 })
 
+// TODO: Potentially add Collect event handler
+
 async function getPosition (event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs> | eventLog<NonfungiblePositionManagerContract_TransferEvent_eventArgs>, context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_TransferEvent_handlerContext): Promise<PositionEntity | null> {
   const tokenId = event.params.tokenId.toString()
   let position = await context.Position.get(tokenId)
