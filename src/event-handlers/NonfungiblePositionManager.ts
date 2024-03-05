@@ -44,7 +44,7 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
 
   context.Position.set(newPosition)
 
-  // savePositionSnapshot(position, event)
+  savePositionSnapshot(position, event, context)
 })
 
 async function getPosition (event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs>, context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync): Promise<PositionEntity | null> {
@@ -62,6 +62,7 @@ async function getPosition (event: eventLog<NonfungiblePositionManagerContract_I
       })
     } catch (e) {
       context.log.error('Error fetching position')
+      console.error(e)
       return null
     }
 
@@ -73,14 +74,21 @@ async function getPosition (event: eventLog<NonfungiblePositionManagerContract_I
       console.log('returning ')
       return null
     }
-    const poolAddress = await viemClient.readContract({
-      address: FACTORY_ADDRESS,
-      abi: FactoryAbi,
-      functionName: 'getPool',
-      // @ts-expect-error we check positionResult manually
-      args: [positionResult[2], positionResult[3], positionResult[4]],
-      blockNumber: BigInt(event.blockNumber)
-    }) as string
+    let poolAddress
+    try {
+      poolAddress = await viemClient.readContract({
+        address: FACTORY_ADDRESS,
+        abi: FactoryAbi,
+        functionName: 'getPool',
+        // @ts-expect-error we check positionResult manually
+        args: [positionResult[2], positionResult[3], positionResult[4]],
+        blockNumber: BigInt(event.blockNumber)
+      }) as string
+    } catch (e) {
+      context.log.error('Error fetching pool')
+      console.error(e)
+      return null
+    }
 
     position = {
       id: tokenId.toString(),
@@ -113,4 +121,37 @@ async function getPosition (event: eventLog<NonfungiblePositionManagerContract_I
   }
 
   return position
+}
+
+// Omitted for now (to speed up syncing)
+// TODO: Maybe add this back in later
+// function updateFeeVars(position: Position, event: ethereum.Event, tokenId: BigInt): Position {
+//   let positionManagerContract = NonfungiblePositionManager.bind(event.address)
+//   let positionResult = positionManagerContract.try_positions(tokenId)
+//   if (!positionResult.reverted) {
+//     position.feeGrowthInside0LastX128 = positionResult.value.value8
+//     position.feeGrowthInside1LastX128 = positionResult.value.value9
+//   }
+//   return position
+// }
+
+function savePositionSnapshot (position: PositionEntity, event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs>, context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync): void {
+  context.PositionSnapshot.set({
+    id: position.id.concat('#').concat(event.blockNumber.toString()),
+    owner: position.owner,
+    pool_id: position.pool_id,
+    position_id: position.id,
+    blockNumber: BigInt(event.blockNumber),
+    timestamp: BigInt(event.blockTimestamp),
+    liquidity: position.liquidity,
+    depositedToken0: position.depositedToken0,
+    depositedToken1: position.depositedToken1,
+    withdrawnToken0: position.withdrawnToken0,
+    withdrawnToken1: position.withdrawnToken1,
+    collectedFeesToken0: position.collectedFeesToken0,
+    collectedFeesToken1: position.collectedFeesToken1,
+    transaction_id: 'tx',
+    feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
+    feeGrowthInside1LastX128: position.feeGrowthInside1LastX128
+  })
 }

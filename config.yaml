@@ -23,6 +23,7 @@ contracts:
         isAsync: true
         requiredEntities:
           - name: Position
+          - name: PositionSnapshot
           - name: Token
 networks:
   - id: 148 # Shimmer
