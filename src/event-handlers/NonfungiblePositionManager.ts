@@ -1,6 +1,8 @@
 import {
   NonfungiblePositionManagerContract_IncreaseLiquidity_loader,
-  NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync
+  NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync,
+  NonfungiblePositionManagerContract_DecreaseLiquidity_loader,
+  NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync
 } from '../../generated/src/Handlers.gen'
 import { type PositionEntity, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs, type eventLog } from '../src/Types.gen'
 import { ADDRESS_ZERO, FACTORY_ADDRESS, POSITION_MANAGER_ADDRESS } from '../utils/constants'
@@ -38,6 +40,44 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
     liquidity: position.liquidity + event.params.liquidity,
     depositedToken0: position.depositedToken0 + Number(amount0),
     depositedToken1: position.depositedToken1 + Number(amount1)
+  }
+
+  // updateFeeVars(position, event, event.params.tokenId)
+
+  context.Position.set(newPosition)
+
+  savePositionSnapshot(position, event, context)
+})
+
+NonfungiblePositionManagerContract_DecreaseLiquidity_loader(({ event, context }) => {
+  context.Position.load(event.params.tokenId.toString(), {})
+})
+
+NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync(async ({ event, context }) => {
+  const position = await getPosition(event, context)
+
+  // position was not able to be fetched
+  if (position == null) {
+    context.log.error('Position not found ' + event.params.tokenId.toString())
+    return
+  }
+
+  const token0 = await context.Token.get(position.token0_id)
+  const token1 = await context.Token.get(position.token1_id)
+
+  if (token0 === undefined || token1 === undefined) {
+    context.log.error('Token not found')
+    return
+  }
+
+  const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
+  const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
+
+  const newPosition = {
+    ...position,
+    liquidity: position.liquidity - event.params.liquidity,
+    withdrawnToken0: position.withdrawnToken0 + Number(amount0),
+    withdrawnToken1: position.withdrawnToken1 + Number(amount1)
   }
 
   // updateFeeVars(position, event, event.params.tokenId)

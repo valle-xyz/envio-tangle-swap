@@ -25,6 +25,12 @@ contracts:
           - name: Position
           - name: PositionSnapshot
           - name: Token
+      - event: DecreaseLiquidity
+        isAsync: true
+        requiredEntities:
+          - name: Position
+          - name: PositionSnapshot
+          - name: Token
 networks:
   - id: 148 # Shimmer
     start_block: 35196
