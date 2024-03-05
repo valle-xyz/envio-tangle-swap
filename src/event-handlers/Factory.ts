@@ -10,6 +10,7 @@ import { fetchTokenSymbol, fetchTokenDecimals, fetchTokenName, fetchTokenTotalSu
 import { WHITELIST_TOKENS } from '../utils/pricing'
 
 FactoryContract_PoolCreated_loader(({ event, context }) => {
+  context.contractRegistration.addPool(event.params.pool)
   context.Pool.load(event.params.pool, {})
   context.Factory.load(FACTORY_ADDRESS)
 })
@@ -156,4 +157,7 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
   if (WHITELIST_TOKENS.includes(token1.id)) {
     context.TokenPoolWhitelist.set({ id: `${token1.id}-${poolEntity.id}`, token_id: token1.id, pool_id: poolEntity.id })
   }
+
+  // create pool contract
+  // context.contractRegistration.addPool(event.params.pool)
 })

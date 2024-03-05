@@ -63,6 +63,7 @@ NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync(async ({ event
     context.log.error('Position not found ' + event.params.tokenId.toString())
     return
   }
+  context.log.info('Position found')
 
   const token0 = await context.Token.get(position.token0_id)
   const token1 = await context.Token.get(position.token1_id)
@@ -185,6 +186,8 @@ async function getPosition (event: eventLog<NonfungiblePositionManagerContract_I
       // @ts-expect-error checked manually
       feeGrowthInside1LastX128: positionResult[9]
     }
+  } else {
+    context.log.info('Position found')
   }
 
   return position
