@@ -62,7 +62,7 @@ async function getPosition (event: eventLog<NonfungiblePositionManagerContract_I
       })
     } catch (e) {
       context.log.error('Error fetching position')
-      console.error(e)
+      console.error(e instanceof Error ? e.name : e)
       return null
     }
 
@@ -86,7 +86,7 @@ async function getPosition (event: eventLog<NonfungiblePositionManagerContract_I
       }) as string
     } catch (e) {
       context.log.error('Error fetching pool')
-      console.error(e)
+      console.error(e instanceof Error ? e.name : e)
       return null
     }
 
