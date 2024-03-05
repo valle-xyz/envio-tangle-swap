@@ -6,7 +6,7 @@ import {
 import { ADDRESS_ZERO, FACTORY_ADDRESS, ZERO_BD, ZERO_BI } from '../utils/constants'
 
 import { type TokenEntity, type BundleEntity, type FactoryEntity, type PoolEntity } from '../../generated/src/Types.gen'
-import { fetchTokenSymbol, fetchTokenDecimals, fetchTokenName, fetchTokenTotalSupply } from '../token'
+import { fetchTokenSymbol, fetchTokenDecimals, fetchTokenName, fetchTokenTotalSupply } from '../utils/token'
 import { WHITELIST_TOKENS } from '../utils/pricing'
 
 FactoryContract_PoolCreated_loader(({ event, context }) => {

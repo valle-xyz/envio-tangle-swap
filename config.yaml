@@ -15,9 +15,20 @@ contracts:
           - name: Factory
           - name: Token
           - name: TokenPoolWhitelist
+  - name: NonfungiblePositionManager
+    abi_file_path: ./abis/NonfungiblePositionManager.json
+    handler: ./src/event-handlers/NonfungiblePositionManager.ts
+    events:
+      - event: IncreaseLiquidity
+        isAsync: true
+        requiredEntities:
+          - name: Position
+          - name: Token
 networks:
   - id: 148 # Shimmer
     start_block: 35196
     contracts:
       - name: Factory #A reference to the global contract definition
         address: 0xdf7bA717FB0D5ce579252f05167cD96d0fA77bCb
+      - name: NonfungiblePositionManager
+        address: 0xbDdbea66383f6A8879701d22B8b45F887123736A
