@@ -46,7 +46,8 @@ contracts:
       - event: Swap
         isAsync: true
         requiredEntities:
-          - name: Swap
+          - name: Pool
+          - name: Position
           - name: Token
       - event: Mint
         requiredEntities:
