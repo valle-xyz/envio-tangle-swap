@@ -153,6 +153,8 @@ type Pool @entity {
   ticks: [Tick!]! @derivedFrom(field: "pool")
   # Intermediate Table to link Tokens and Pools
   whitelistPools: [TokenPoolWhitelist!]! @derivedFrom(field: "pool")
+  positions: [Position!]! @derivedFrom(field: "pool")
+  positionIds: String!
 }
 
 type Tick @entity {

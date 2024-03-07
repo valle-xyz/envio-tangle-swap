@@ -141,7 +141,8 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
     totalValueLockedETH: 0,
     createdAtBlockNumber: 0n,
     volumeToken1: 0,
-    createdAtTimestamp: BigInt(event.blockTimestamp)
+    createdAtTimestamp: BigInt(event.blockTimestamp),
+    positionIds: ''
   }
 
   context.Pool.set(poolEntity)

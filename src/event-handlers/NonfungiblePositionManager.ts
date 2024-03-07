@@ -58,6 +58,13 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
       tickLower: poolPosition.tickLower,
       tickUpper: poolPosition.tickUpper
     } satisfies PositionEntity
+
+    // update pool positionIds
+    const newPool = {
+      ...pool,
+      positionIds: pool.positionIds === '' ? tokenId.toString() : pool.positionIds.concat(',', tokenId)
+    }
+    context.Pool.set(newPool)
   }
 
   // const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
