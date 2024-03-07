@@ -13,7 +13,7 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_loader(({ event, context })
   context.Position.load(event.params.tokenId.toString(), {})
   context.PoolPosition.load('last', {
     loaders: {
-      loadPool: true
+      loadPool: {}
     }
   })
 })
@@ -26,6 +26,11 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handler(({ event, context }
   }
 
   const pool = context.PoolPosition.getPool(poolPosition)
+
+  if (pool === undefined) {
+    context.log.error('Pool not found')
+    return
+  }
 
   const token0 = context.Token.get(pool.token0_id)
   const token1 = context.Token.get(pool.token1_id)
