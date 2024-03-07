@@ -1,0 +1,164 @@
+{
+  "0x1074010000000000000000000000000000000000": {
+    "symbol": "SMR",
+    "name": "Shimmer",
+    "totalSupply": "1813620509061365",
+    "decimals": 6
+  },
+  "0xa158A39d00C79019A01A6E86c56E96C461334Eb0": {
+    "symbol": "sETH",
+    "name": "Wrap ETH",
+    "totalSupply": "49752601958011414125",
+    "decimals": 18
+  },
+  "0xd1189eD9800D4977eD594BfFCE74ae4336c15A4a": {
+    "symbol": "mUSDC",
+    "name": "mock USDC",
+    "totalSupply": "1000000000000000",
+    "decimals": 6
+  },
+  "0x1cDF3F46DbF8Cf099D218cF96A769cea82F75316": {
+    "symbol": "sBTC",
+    "name": "Wrap WBTC",
+    "totalSupply": "236356517",
+    "decimals": 8
+  },
+  "0xE9308Bf2d95d11E324E0C62FF24bBD4bbc5dA546": {
+    "symbol": "SDDT",
+    "name": "Shimmer Doge DAO Token",
+    "totalSupply": "1200000000000",
+    "decimals": 6
+  },
+  "0xd459140CFA38f3488F2076c3A4e9271Cf2f2E40C": {
+    "symbol": "OBS",
+    "name": "Obsidian",
+    "totalSupply": "100000000000000000000000000",
+    "decimals": 18
+  },
+  "0x1426116752d65111278c9e598E80E3B055D8D571": {
+    "symbol": "SHIMMERINU",
+    "name": "Shimmer Inu",
+    "totalSupply": "3006666666667000000000000000000",
+    "decimals": 18
+  },
+  "0x3C844FB5AD27A078d945dDDA8076A4084A76E513": {
+    "symbol": "sSOON",
+    "name": "Wrap SOON",
+    "totalSupply": "9750290638263",
+    "decimals": 6
+  },
+  "0x8b9f7e5E710Aed102BBc670B771c66F152029399": {
+    "symbol": "$PUNK",
+    "name": "PUNKS",
+    "totalSupply": "250000000000000000000000000",
+    "decimals": 18
+  },
+  "0xBcA9A40A96f7567551558A6f053B9c20564A0166": {
+    "symbol": "HATE",
+    "name": "HATE",
+    "totalSupply": "4557200000000000000000",
+    "decimals": 18
+  },
+  "0x83b090759017EFC9cB4d9E45B813f5D5CbBFeb95": {
+    "symbol": "FUEL",
+    "name": "Epoch Zero FUEL Token",
+    "totalSupply": "350000100000000",
+    "decimals": 6
+  },
+  "0x174d211F46994860500DB4d66B3EFE605A82BF95": {
+    "symbol": "AUR",
+    "name": "Aureus",
+    "totalSupply": "1618033988000000000000000000",
+    "decimals": 18
+  },
+  "0x3bBb9B7848De06778fEE4fE0bC4d9AB271e56648": {
+    "symbol": "IHG",
+    "name": "Gold",
+    "totalSupply": "4402058000000000000000000",
+    "decimals": 18
+  },
+  "0xc0E49f8C615d3d4c245970F6Dc528E4A47d69a44": {
+    "symbol": "USDT",
+    "name": "Tether USD",
+    "totalSupply": "2511962864784494313747",
+    "decimals": 18
+  },
+  "0xe051d1af4b1149FfB314C41C87E3501CFb961a73": {
+    "symbol": "FISH",
+    "name": "BigFish",
+    "totalSupply": "1000000000000000000000000000",
+    "decimals": 18
+  },
+  "0x326f23422CE22Ee5fBb5F37f9fa1092d095546F8": {
+    "symbol": "DEEPR",
+    "name": "Deepr",
+    "totalSupply": "1000000000000000000000000000",
+    "decimals": 18
+  },
+  "0x772F9103F3c3Fb236ebC17Fed9c304EC283ae025": {
+    "symbol": "Nips",
+    "name": "Nip Cream",
+    "totalSupply": "1000000000000000000000000",
+    "decimals": 18
+  },
+  "0x531509d60311749b0BC935C5385100Fa29D83168": {
+    "symbol": "Tanglee",
+    "name": "Tangle",
+    "totalSupply": "99999999999999999999990000000000",
+    "decimals": 18
+  },
+  "0x5dA63f4456A56a0c5Cb0B2104a3610D5CA3d48E8": {
+    "symbol": "sIOTA",
+    "name": "Wrap IOTA",
+    "totalSupply": "4448948811308",
+    "decimals": 6
+  },
+  "0xD4E4b0a4d722CAF9287c87D29d656475B6135539": {
+    "symbol": "BUTT",
+    "name": "BUTT",
+    "totalSupply": "1000000000000000000000",
+    "decimals": 18
+  },
+  "0xc5759E47b0590146675C560163036C302Fa05bC3": {
+    "symbol": "SPHE",
+    "name": "Sphericals",
+    "totalSupply": "10000000000000000000000000000",
+    "decimals": 18
+  },
+  "0xE5f3dCC241Dd008E3c308e57cf4F7880eA9210F8": {
+    "symbol": "unknown",
+    "name": "TangleSwap",
+    "totalSupply": "50000000000000000000000000",
+    "decimals": 18
+  },
+  "0x4638C9fb4eFFe36C49d8931BB713126063BF38f9": {
+    "symbol": "ETH",
+    "name": "Ether",
+    "totalSupply": "149305395971608816105",
+    "decimals": 18
+  },
+  "0xb0119035d08CB5f467F9ed8Eae4E5f9626Aa7402": {
+    "symbol": "WBTC",
+    "name": "Wrapped Bitcoin",
+    "totalSupply": "204455490",
+    "decimals": 8
+  },
+  "0xa4f8C7C1018b9dD3be5835bF00f335D9910aF6Bd": {
+    "symbol": "USDT",
+    "name": "Tether USD",
+    "totalSupply": "2349920297327",
+    "decimals": 6
+  },
+  "0xeCE555d37C37D55a6341b80cF35ef3BC57401d1A": {
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "totalSupply": "325721320743",
+    "decimals": 6
+  },
+  "0x7905e0E3E0Cd7A7b0a06a7C3b28b54Ef0d0aFc11": {
+    "symbol": "TEST",
+    "name": "TEST",
+    "totalSupply": "999637681159420290431463",
+    "decimals": 18
+  }
+}

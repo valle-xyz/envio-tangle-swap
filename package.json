@@ -28,8 +28,10 @@
     "typescript": "5.2.2"
   },
   "dependencies": {
+    "@uniswap/sdk-core": "^4.1.4",
+    "@uniswap/v3-sdk": "^3.10.2",
     "chai": "4.3.10",
-    "envio": "0.0.0-main-20240304135353-a8b85344",
+    "envio": "0.0.32-float-db-decode-fix",
     "ethers": "6.8.0",
     "viem": "1.16.6"
   }
