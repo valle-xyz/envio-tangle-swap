@@ -30,6 +30,7 @@ contracts:
         isAsync: true
         requiredEntities:
           - name: Position
+          - name: Pool
           - name: PositionSnapshot
           - name: Token
       - event: Transfer
@@ -50,12 +51,6 @@ contracts:
           - name: Position
           - name: Token
       - event: Mint
-        requiredEntities:
-          - name: Mint
-          - name: Token
-          - name: Pool
-          - name: PoolPosition
-      - event: Burn
         requiredEntities:
           - name: Mint
           - name: Token
