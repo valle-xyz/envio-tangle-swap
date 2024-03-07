@@ -242,6 +242,8 @@ type Position @entity {
   withdrawnToken0: BigInt!
   # amount of token 1 ever withdrawn from position (without fees)
   withdrawnToken1: BigInt!
+  amount0: BigInt
+  amount1: BigInt
   # all time collected token0 (withdrawnToken0 + collectedFeesToken0)
   # collectedToken0: Float!
   # all time collected token1 (withdrawnToken1 + collectedFeesToken1)
@@ -286,6 +288,8 @@ type PositionSnapshot @entity {
   # collectedFeesToken1: Float!
   # tx in which the snapshot was initialized
   transaction: Transaction!
+  amount0: BigInt
+  amount1: BigInt
   # internal vars needed for fee computation
   # feeGrowthInside0LastX128: BigInt!
   # feeGrowthInside1LastX128: BigInt!

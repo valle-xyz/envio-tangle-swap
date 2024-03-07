@@ -178,7 +178,9 @@ function savePositionSnapshot (position: PositionEntity,
     withdrawnToken1: position.withdrawnToken1,
     // collectedFeesToken0: position.collectedFeesToken0,
     // collectedFeesToken1: position.collectedFeesToken1,
-    transaction_id: 'tx'
+    transaction_id: 'tx',
+    amount0: position.amount0,
+    amount1: position.amount1
     // feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
     // feeGrowthInside1LastX128: position.feeGrowthInside1LastX128
   })

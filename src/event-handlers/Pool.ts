@@ -148,7 +148,9 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
       withdrawnToken1: position.withdrawnToken1,
       // collectedFeesToken0: position.collectedFeesToken0,
       // collectedFeesToken1: position.collectedFeesToken1,
-      transaction_id: 'tx'
+      transaction_id: 'tx',
+      amount0: token0Amount,
+      amount1: token1Amount
     // feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
     // feeGrowthInside1LastX128: position.feeGrowthInside1LastX128
     })
