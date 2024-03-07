@@ -1,6 +1,7 @@
 import {
   NonfungiblePositionManagerContract_IncreaseLiquidity_loader,
-  NonfungiblePositionManagerContract_IncreaseLiquidity_handler,
+  // NonfungiblePositionManagerContract_IncreaseLiquidity_handler,
+  NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync,
   NonfungiblePositionManagerContract_DecreaseLiquidity_loader,
   NonfungiblePositionManagerContract_DecreaseLiquidity_handler,
   NonfungiblePositionManagerContract_Transfer_loader,
@@ -17,23 +18,23 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_loader(({ event, context })
   })
 })
 
-NonfungiblePositionManagerContract_IncreaseLiquidity_handler(({ event, context }) => {
+NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event, context }) => {
   console.log('IncreaseLiquidity_handler')
-  const poolPosition = context.PoolPosition.get('last')
+  const poolPosition = await context.PoolPosition.get('last')
   if (poolPosition === undefined) {
     context.log.error('PoolPosition not found')
     return
   }
 
-  const pool = context.PoolPosition.getPool(poolPosition)
+  const pool = await context.PoolPosition.getPool(poolPosition)
 
   if (pool === undefined) {
     context.log.error('Pool not found')
     return
   }
 
-  const token0 = context.Pool.getToken0(pool)
-  const token1 = context.Pool.getToken1(pool)
+  const token0 = await context.Pool.getToken0(pool)
+  const token1 = await context.Pool.getToken1(pool)
 
   if (token0 === undefined || token1 === undefined) {
     context.log.error('Token not found')
@@ -41,7 +42,7 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handler(({ event, context }
   }
 
   const tokenId = event.params.tokenId.toString()
-  let position = context.Position.get(tokenId)
+  let position = await context.Position.get(tokenId)
 
   if (position === undefined) {
     context.log.error('Position not found ')
@@ -154,7 +155,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
 //   return position
 // }
 
-function savePositionSnapshot (position: PositionEntity,
+function savePositionSnapshot(position: PositionEntity,
   event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs> | eventLog<NonfungiblePositionManagerContract_TransferEvent_eventArgs>,
   context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_TransferEvent_handlerContext
 ): void {
