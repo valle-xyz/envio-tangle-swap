@@ -118,5 +118,41 @@
     "name": "BUTT",
     "totalSupply": "1000000000000000000000",
     "decimals": 18
+  },
+  "0xc5759E47b0590146675C560163036C302Fa05bC3": {
+    "symbol": "SPHE",
+    "name": "Sphericals",
+    "totalSupply": "10000000000000000000000000000",
+    "decimals": 18
+  },
+  "0xE5f3dCC241Dd008E3c308e57cf4F7880eA9210F8": {
+    "symbol": "unknown",
+    "name": "TangleSwap",
+    "totalSupply": "50000000000000000000000000",
+    "decimals": 18
+  },
+  "0x4638C9fb4eFFe36C49d8931BB713126063BF38f9": {
+    "symbol": "ETH",
+    "name": "Ether",
+    "totalSupply": "149305395971608816105",
+    "decimals": 18
+  },
+  "0xb0119035d08CB5f467F9ed8Eae4E5f9626Aa7402": {
+    "symbol": "WBTC",
+    "name": "Wrapped Bitcoin",
+    "totalSupply": "204455490",
+    "decimals": 8
+  },
+  "0xa4f8C7C1018b9dD3be5835bF00f335D9910aF6Bd": {
+    "symbol": "USDT",
+    "name": "Tether USD",
+    "totalSupply": "2349920297327",
+    "decimals": 6
+  },
+  "0xeCE555d37C37D55a6341b80cF35ef3BC57401d1A": {
+    "symbol": "USDC",
+    "name": "USD Coin",
+    "totalSupply": "325721320743",
+    "decimals": 6
   }
 }
