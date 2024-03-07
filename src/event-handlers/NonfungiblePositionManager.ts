@@ -132,7 +132,9 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
       depositedToken0: 0n,
       depositedToken1: 0n,
       withdrawnToken0: 0n,
-      withdrawnToken1: 0n
+      withdrawnToken1: 0n,
+      amount0: undefined,
+      amount1: undefined
     } satisfies PositionEntity
   }
 
@@ -143,7 +145,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
 
   context.Position.set(newPosition)
 
-  savePositionSnapshot(position, event, context)
+  // savePositionSnapshot(position, event, context)
 })
 
 // TODO: Potentially add Collect event handler
