@@ -81,7 +81,7 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
 
   context.Position.set(newPosition)
 
-  savePositionSnapshot(position, event, context)
+  savePositionSnapshot(newPosition, event, context)
 })
 
 NonfungiblePositionManagerContract_DecreaseLiquidity_loader(({ event, context }) => {
@@ -108,7 +108,7 @@ NonfungiblePositionManagerContract_DecreaseLiquidity_handler(({ event, context }
 
   context.Position.set(newPosition)
 
-  savePositionSnapshot(position, event, context)
+  savePositionSnapshot(newPosition, event, context)
 })
 
 NonfungiblePositionManagerContract_Transfer_loader(({ event, context }) => {
@@ -118,7 +118,9 @@ NonfungiblePositionManagerContract_Transfer_loader(({ event, context }) => {
 NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
   let position = context.Position.get(event.params.tokenId.toString())
 
-  if (position === undefined) {
+  const isMintEvent = position === undefined
+
+  if (isMintEvent) {
     position = {
       id: event.params.tokenId.toString(),
       // The owner gets correctly updated in the Transfer handler
@@ -145,7 +147,11 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
 
   context.Position.set(newPosition)
 
-  // savePositionSnapshot(position, event, context)
+  // only save snapshot if it's not a mint event, but a transfer
+  // for mint event the snappshot will be saved in the IncreaseLiquidity handler
+  if (!isMintEvent) {
+    savePositionSnapshot(newPosition, event, context)
+  }
 })
 
 // TODO: Potentially add Collect event handler
