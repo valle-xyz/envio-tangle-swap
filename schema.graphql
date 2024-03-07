@@ -201,6 +201,17 @@ type Tick @entity {
   feeGrowthOutside1X128: BigInt!
 }
 
+type PoolPosition @entity {
+  id: ID!
+  owner: String!
+  tickLower: BigInt!
+  tickUpper: BigInt!
+  pool: Pool!
+  amount: BigInt!
+  amount0: BigInt!
+  amount1: BigInt!
+}
+
 type Position @entity {
   # Positions created through NonfungiblePositionManager
   # NFT token id
@@ -214,32 +225,34 @@ type Position @entity {
   # allow indexing by tokens
   token1: Token!
   # lower tick of the position
-  tickLower: Tick!
+  # tickLower: Tick!
+  tickLower: BigInt!
   # upper tick of the position
-  tickUpper: Tick!
+  # tickUpper: Tick!
+  tickUpper: BigInt!
   # total position liquidity
   liquidity: BigInt!
   # amount of token 0 ever deposited to position
-  depositedToken0: Float!
+  depositedToken0: BigInt!
   # amount of token 1 ever deposited to position
-  depositedToken1: Float!
+  depositedToken1: BigInt!
   # amount of token 0 ever withdrawn from position (without fees)
-  withdrawnToken0: Float!
+  withdrawnToken0: BigInt!
   # amount of token 1 ever withdrawn from position (without fees)
-  withdrawnToken1: Float!
+  withdrawnToken1: BigInt!
   # all time collected token0 (withdrawnToken0 + collectedFeesToken0)
-  collectedToken0: Float!
+  # collectedToken0: Float!
   # all time collected token1 (withdrawnToken1 + collectedFeesToken1)
-  collectedToken1: Float!
+  # collectedToken1: Float!
   # all time collected fees in token0
-  collectedFeesToken0: Float!
+  # collectedFeesToken0: Float!
   # all time collected fees in token1
-  collectedFeesToken1: Float!
+  # collectedFeesToken1: Float!
   # tx in which the position was initialized
-  transaction: Transaction!
+  # transaction: Transaction!
   # vars needed for fee computation
-  feeGrowthInside0LastX128: BigInt!
-  feeGrowthInside1LastX128: BigInt!
+  # feeGrowthInside0LastX128: BigInt
+  # feeGrowthInside1LastX128: BigInt
 }
 
 type PositionSnapshot @entity {
@@ -258,22 +271,22 @@ type PositionSnapshot @entity {
   # total position liquidity
   liquidity: BigInt!
   # amount of token 0 ever deposited to position
-  depositedToken0: Float!
+  depositedToken0: BigInt!
   # amount of token 1 ever deposited to position
-  depositedToken1: Float!
+  depositedToken1: BigInt!
   # amount of token 0 ever withdrawn from position (without fees)
-  withdrawnToken0: Float!
+  withdrawnToken0: BigInt!
   # amount of token 1 ever withdrawn from position (without fees)
-  withdrawnToken1: Float!
+  withdrawnToken1: BigInt!
   # all time collected fees in token0
-  collectedFeesToken0: Float!
+  # collectedFeesToken0: Float!
   # all time collected fees in token1
-  collectedFeesToken1: Float!
+  # collectedFeesToken1: Float!
   # tx in which the snapshot was initialized
   transaction: Transaction!
   # internal vars needed for fee computation
-  feeGrowthInside0LastX128: BigInt!
-  feeGrowthInside1LastX128: BigInt!
+  # feeGrowthInside0LastX128: BigInt!
+  # feeGrowthInside1LastX128: BigInt!
 }
 
 type Transaction @entity {

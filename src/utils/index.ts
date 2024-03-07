@@ -80,3 +80,7 @@ export function loadTransaction (event: any): any {
   transaction.gasPrice = event.transaction.gasPrice
   return transaction
 }
+
+export function getPositionKey (pool: string, owner: string, tickLower: bigint, tickUpper: bigint): string {
+  return pool.concat('-').concat(owner).concat('-').concat(tickLower.toString()).concat('-').concat(tickUpper.toString())
+}

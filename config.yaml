@@ -24,6 +24,7 @@ contracts:
         requiredEntities:
           - name: Position
           - name: PositionSnapshot
+          - name: PoolPosition
           - name: Token
       - event: DecreaseLiquidity
         isAsync: true
@@ -35,6 +36,30 @@ contracts:
         requiredEntities:
           - name: Position
           - name: PositionSnapshot
+  - name: Pool
+    abi_file_path: ./abis/pool.json
+    handler: ./src/event-handlers/Pool.ts
+    events:
+      - event: Initialize
+        requiredEntities:
+          - name: Pool
+      - event: Swap
+        isAsync: true
+        requiredEntities:
+          - name: Swap
+          - name: Token
+      - event: Mint
+        requiredEntities:
+          - name: Mint
+          - name: Token
+          - name: Pool
+          - name: PoolPosition
+      - event: Burn
+        requiredEntities:
+          - name: Mint
+          - name: Token
+          - name: Pool
+          - name: PoolPosition
 networks:
   - id: 148 # Shimmer
     start_block: 35196
@@ -43,3 +68,28 @@ networks:
         address: 0xdf7bA717FB0D5ce579252f05167cD96d0fA77bCb
       - name: NonfungiblePositionManager
         address: 0xbDdbea66383f6A8879701d22B8b45F887123736A
+      - name: Pool
+        # address: [
+        #   0xA0E105b9300Cfa9564126A705d6E5Bc9E05DE618,
+        #   0x9522f7bF80d2c51D6359931eddf32cfc09ae15DE,
+        #   0xe17662315e98e3c6985BEBB2334aeFC334252C57,
+        #   0x6CE378e310525E55656Ec1474052824035ce441c,
+        #   0x143A657e5eD2f5dF2aF25e2966B8cb754A8A26dB,
+        #   0xB12F5acACc2A7827A59Ee1de0Dcfd6F2fdB4E6ac,
+        #   0x58A4684345a819B1246dC648f80f52Da9d932269,
+        #   0x31aeAf482bE6035392c49db960589Fe1BB0FdF34,
+        #   0xcF13aeF27441f4d19E7F7149D3cA3fB3BE39afDD,
+        #   0x937a0457e665205fEA19f14bd23cF1fc8Cf98257,
+        #   0xFE3F65D157C53e40f7b11df53496EC55fe966854,
+        #   0xA2AaD6cf6214e2bF54224A260258933933311530,
+        #   0x2aEfc64d495209160861Dbcf903BE43633b8f16A,
+        #   0xEF668c0Ed3b535F0F8136ae1a8Ce54993376b5E9,
+        #   0x99347FeF09d76Cb14295f15bA45665D40A63F52F,
+        #   0x5D5c172ca2aE09Ba5204af377BE192bEC880daC4,
+        #   0xceF88B5E67152A7a8c0840129d33E6912E4C7E4e,
+        #   0x32543798b108bfcf95bc60af6111f01155b262d6,
+        #   0xf56f51a3bfd44de9810acdc1d91cd307e3b8d483,
+        #   0xc6bf421e982648690070330e4664bd4876719493,
+        #   0xb587996d7949781a9fc7dB29bf309B74762cE627, # Diese Contracts zaehlen nur vom 31.01.24 3pm CET bis 12.02.24 3pm CT
+        #   0x32EbF0F0abEE33B18be321A5Af66e9E1Ba4e3B56, # Diese Contracts zaehlen nur vom 31.01.24 3pm CET bis 12.02.24 3pm CT
+        # ]

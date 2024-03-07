@@ -46,35 +46,51 @@ export async function fetchTokenDetails (tokenAddress: string): Promise<TokenDet
 }
 
 export async function fetchTokenSymbol (tokenAddress: string): Promise<string> {
-  const symbolResult = await viemClient.readContract({
-    address: tokenAddress as `0x${string}`,
-    abi: ERC20Abi,
-    functionName: 'symbol'
-  })
+  try {
+    const symbolResult = await viemClient.readContract({
+      address: tokenAddress as `0x${string}`,
+      abi: ERC20Abi,
+      functionName: 'symbol'
+    })
 
-  return symbolResult as string
+    return symbolResult as string
+  } catch (error) {
+    return 'unknown'
+  }
 }
 
 export async function fetchTokenName (tokenAddress: string): Promise<string> {
-  return await viemClient.readContract({
-    address: tokenAddress as `0x${string}`,
-    abi: ERC20Abi,
-    functionName: 'name'
-  }) as string
+  try {
+    return await viemClient.readContract({
+      address: tokenAddress as `0x${string}`,
+      abi: ERC20Abi,
+      functionName: 'name'
+    }) as string
+  } catch (error) {
+    return 'unknown'
+  }
 }
 
 export async function fetchTokenTotalSupply (tokenAddress: string): Promise<bigint> {
-  return await viemClient.readContract({
-    address: tokenAddress as `0x${string}`,
-    abi: ERC20Abi,
-    functionName: 'totalSupply'
-  }) as bigint
+  try {
+    return await viemClient.readContract({
+      address: tokenAddress as `0x${string}`,
+      abi: ERC20Abi,
+      functionName: 'totalSupply'
+    }) as bigint
+  } catch (error) {
+    return BigInt(0)
+  }
 }
 
 export async function fetchTokenDecimals (tokenAddress: string): Promise<bigint> {
-  return await viemClient.readContract({
-    address: tokenAddress as `0x${string}`,
-    abi: ERC20Abi,
-    functionName: 'decimals'
-  }) as bigint
+  try {
+    return await viemClient.readContract({
+      address: tokenAddress as `0x${string}`,
+      abi: ERC20Abi,
+      functionName: 'decimals'
+    }) as bigint
+  } catch (error) {
+    return BigInt(0)
+  }
 }
