@@ -130,9 +130,9 @@ type Pool @entity {
   # all time fees collected derived USD
   collectedFeesUSD: Float!
   # total token 0 across all ticks
-  totalValueLockedToken0: Float!
+  totalValueLockedToken0: BigInt!
   # total token 1 across all ticks
-  totalValueLockedToken1: Float!
+  totalValueLockedToken1: BigInt!
   # tvl derived ETH
   totalValueLockedETH: Float!
   # tvl USD
