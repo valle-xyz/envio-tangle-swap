@@ -132,7 +132,9 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
       depositedToken0: 0n,
       depositedToken1: 0n,
       withdrawnToken0: 0n,
-      withdrawnToken1: 0n
+      withdrawnToken1: 0n,
+      amount0: undefined,
+      amount1: undefined
     } satisfies PositionEntity
   }
 
@@ -143,7 +145,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
 
   context.Position.set(newPosition)
 
-  savePositionSnapshot(position, event, context)
+  // savePositionSnapshot(position, event, context)
 })
 
 // TODO: Potentially add Collect event handler
@@ -178,7 +180,9 @@ function savePositionSnapshot (position: PositionEntity,
     withdrawnToken1: position.withdrawnToken1,
     // collectedFeesToken0: position.collectedFeesToken0,
     // collectedFeesToken1: position.collectedFeesToken1,
-    transaction_id: 'tx'
+    transaction_id: 'tx',
+    amount0: position.amount0,
+    amount1: position.amount1
     // feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
     // feeGrowthInside1LastX128: position.feeGrowthInside1LastX128
   })
