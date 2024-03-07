@@ -49,7 +49,7 @@ PoolContract_Mint_handler(({ event, context }) => {
   }
 
   context.PoolPosition.set(newPoolPosition)
-  // also set cache
+  // also set cache here
   context.PoolPosition.set({ ...newPoolPosition, id: 'last' })
 })
 
