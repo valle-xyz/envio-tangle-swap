@@ -7,7 +7,7 @@ import {
   PoolContract_Swap_handlerAsync
 
 } from '../../generated/src/Handlers.gen'
-import { type PoolPositionEntity } from '../src/Types.gen'
+import { type PoolEntity, type PoolPositionEntity } from '../src/Types.gen'
 import { getPositionKey } from '../utils'
 import { Position, Pool, SqrtPriceMath, TickMath } from '@uniswap/v3-sdk'
 import { BigintIsh, MaxUint256, Percent, Price, type CurrencyAmount, type Token } from '@uniswap/sdk-core'
@@ -69,10 +69,10 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
     return
   }
 
-  const newPool = {
+  const newPool: PoolEntity = {
     ...pool,
     tick,
-    sqrtPriceX96
+    sqrtPrice: sqrtPriceX96
   }
 
   context.Pool.set(newPool)
@@ -86,7 +86,7 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
     const position = await context.Position.get(positionId)
 
     if (position === undefined) {
-      context.log.error('Position not found')
+      context.log.error('Position not found ' + positionId)
       return
     }
 
@@ -102,8 +102,8 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
         ).toString())
       token1Amount = 0n
     } else if (tick < position.tickUpper) {
-      token0Amount = BigInt(SqrtPriceMath.getAmount1Delta(
-        JSBI.BigInt(pool.sqrtPrice.toString()),
+      token0Amount = BigInt(SqrtPriceMath.getAmount0Delta(
+        JSBI.BigInt(sqrtPriceX96.toString()),
         TickMath.getSqrtRatioAtTick(Number(position.tickUpper)),
         JSBI.BigInt(position.liquidity.toString()),
         false
@@ -111,7 +111,7 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
 
       token1Amount = BigInt(SqrtPriceMath.getAmount1Delta(
         TickMath.getSqrtRatioAtTick(Number(position.tickLower)),
-        JSBI.BigInt(pool.sqrtPrice.toString()),
+        JSBI.BigInt(sqrtPriceX96.toString()),
         JSBI.BigInt(position.liquidity.toString()),
         false
       ).toString())

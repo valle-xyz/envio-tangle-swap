@@ -10,6 +10,7 @@
     "clean-db": "envio local db-migrate setup",
     "dev": "envio dev",
     "test": "pnpm mocha",
+    "test-watch": "pnpm mocha --watch",
     "start": "ts-node generated/src/Index.bs.js"
   },
   "devDependencies": {
