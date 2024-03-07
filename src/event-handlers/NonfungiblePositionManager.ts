@@ -146,7 +146,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
     owner: event.params.to
   }
 
-  context.Position.set(newPosition)[]
+  context.Position.set(newPosition)
 
   // only save snapshot on Transfer
   // for Mint event the snappshot will be saved in the IncreaseLiquidity handler
