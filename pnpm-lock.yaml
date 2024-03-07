@@ -12,8 +12,8 @@ importers:
         specifier: 4.3.10
         version: 4.3.10
       envio:
-        specifier: 0.0.0-main-20240304135353-a8b85344
-        version: 0.0.0-main-20240304135353-a8b85344
+        specifier: 0.0.32-float-db-decode-fix
+        version: 0.0.32-float-db-decode-fix
       ethers:
         specifier: 6.8.0
         version: 6.8.0
@@ -1105,28 +1105,37 @@ packages:
       once: 1.4.0
     dev: false
 
-  /envio-darwin-arm64@0.0.0-main-20240304135353-a8b85344:
-    resolution: {integrity: sha512-YN4qzsRPx2M+sPCUlPYk6k5wer6cneSUruc2TBmklReAlCpCa3GMKLGdRrXkoxIvR21Mvyc0Sq3vNr368Quupw==}
+  /envio-darwin-arm64@0.0.32-float-db-decode-fix:
+    resolution: {integrity: sha512-VSwqLHJQ+nmKIYjuEqvA15E6u2O6cmyIdENGljEiRWriJQNfNVMl3CQEtj34fmoSBrRQ4McU7/LJVaDSBJG02Q==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: false
     optional: true
 
-  /envio-linux-x64@0.0.0-main-20240304135353-a8b85344:
-    resolution: {integrity: sha512-r7S9bQdHC91a3QMLhChwTDOvHiyrehe7eqE7pjiRANYCPO3Ow9NTbMklX4p/VPh6HWXZllZAKZNiJrfTOqNG+A==}
+  /envio-darwin-x64@0.0.32-float-db-decode-fix:
+    resolution: {integrity: sha512-8AN0KEyPf1Bf+NTIFOObSYRcY7CrxemFwD+MI7oWtVLbXW90UeZiAZseEcmiskqfWMrlJUWaGylc/MWOAv2OEQ==}
+    cpu: [x64]
+    os: [darwin]
+    requiresBuild: true
+    dev: false
+    optional: true
+
+  /envio-linux-x64@0.0.32-float-db-decode-fix:
+    resolution: {integrity: sha512-KWGOGgRSFTVmmBcme0fap7Djqb9/yozoloYKS3gJAXAtSYtZwaL5BZwvi1/wr0TKt7D8wxvdv0rfW1mbZOCqxA==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: false
     optional: true
 
-  /envio@0.0.0-main-20240304135353-a8b85344:
-    resolution: {integrity: sha512-W32swkssCRwI1RolrNWOGulLooYc3YDa5QEV/TZSWTmrgqF/oGOtn1lM2NkEE5JWqJRBbTxc+S+DHNZBA0+CvA==}
+  /envio@0.0.32-float-db-decode-fix:
+    resolution: {integrity: sha512-Bo7AxxynNyJ67Ha4BPJK4k9TYCspYom3cfGR2pdzuOS0lK3ujpnOuyWhxoKL+AG8ZOqWj6ktWlpVFld4TI9JGQ==}
     hasBin: true
     optionalDependencies:
-      envio-darwin-arm64: 0.0.0-main-20240304135353-a8b85344
-      envio-linux-x64: 0.0.0-main-20240304135353-a8b85344
+      envio-darwin-arm64: 0.0.32-float-db-decode-fix
+      envio-darwin-x64: 0.0.32-float-db-decode-fix
+      envio-linux-x64: 0.0.32-float-db-decode-fix
     dev: false
 
   /es-abstract@1.22.5:

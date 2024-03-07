@@ -154,5 +154,11 @@
     "name": "USD Coin",
     "totalSupply": "325721320743",
     "decimals": 6
+  },
+  "0x7905e0E3E0Cd7A7b0a06a7C3b28b54Ef0d0aFc11": {
+    "symbol": "TEST",
+    "name": "TEST",
+    "totalSupply": "999637681159420290431463",
+    "decimals": 18
   }
 }

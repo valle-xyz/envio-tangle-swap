@@ -7,18 +7,18 @@ import {
   NonfungiblePositionManagerContract_Transfer_handler
 } from '../../generated/src/Handlers.gen'
 import { type PositionEntity, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs, type eventLog, type NonfungiblePositionManagerContract_TransferEvent_handlerContext, type NonfungiblePositionManagerContract_TransferEvent_eventArgs } from '../src/Types.gen'
-import { ADDRESS_ZERO } from '../utils/constants'
 
 NonfungiblePositionManagerContract_IncreaseLiquidity_loader(({ event, context }) => {
   context.Position.load(event.params.tokenId.toString(), {})
   context.PoolPosition.load('last', {
     loaders: {
-      loadPool: {}
+      loadPool: { loadToken0: true, loadToken1: true }
     }
   })
 })
 
 NonfungiblePositionManagerContract_IncreaseLiquidity_handler(({ event, context }) => {
+  console.log('IncreaseLiquidity_handler')
   const poolPosition = context.PoolPosition.get('last')
   if (poolPosition === undefined) {
     context.log.error('PoolPosition not found')
@@ -32,8 +32,8 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handler(({ event, context }
     return
   }
 
-  const token0 = context.Token.get(pool.token0_id)
-  const token1 = context.Token.get(pool.token1_id)
+  const token0 = context.Pool.getToken0(pool)
+  const token1 = context.Pool.getToken1(pool)
 
   if (token0 === undefined || token1 === undefined) {
     context.log.error('Token not found')
@@ -44,20 +44,20 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handler(({ event, context }
   let position = context.Position.get(tokenId)
 
   if (position === undefined) {
+    context.log.error('Position not found ')
+    return
+  }
+
+  // Position got created in this tx
+  if (position?.tickLower === 0n && position.tickUpper === 0n) {
     position = {
-      id: tokenId.toString(),
+      ...position,
       // The owner gets correctly updated in the Transfer handler
-      owner: ADDRESS_ZERO,
       pool_id: pool.id,
       token0_id: token0.id,
       token1_id: token1.id,
       tickLower: poolPosition.tickLower,
-      tickUpper: poolPosition.tickUpper,
-      liquidity: event.params.liquidity,
-      depositedToken0: event.params.amount0,
-      depositedToken1: event.params.amount1,
-      withdrawnToken0: 0n,
-      withdrawnToken1: 0n
+      tickUpper: poolPosition.tickUpper
     } satisfies PositionEntity
   }
 
@@ -86,16 +86,8 @@ NonfungiblePositionManagerContract_DecreaseLiquidity_handler(({ event, context }
   const position = context.Position.get(event.params.tokenId.toString())
 
   // position was not able to be fetched
-  if (position == null) {
+  if (position === undefined) {
     context.log.error('Position not found ' + event.params.tokenId.toString())
-    return
-  }
-
-  const token0 = context.Token.get(position.token0_id)
-  const token1 = context.Token.get(position.token1_id)
-
-  if (token0 === undefined || token1 === undefined) {
-    context.log.error('Token not found')
     return
   }
 
@@ -118,12 +110,24 @@ NonfungiblePositionManagerContract_Transfer_loader(({ event, context }) => {
 })
 
 NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
-  const position = context.Position.get(event.params.tokenId.toString())
+  let position = context.Position.get(event.params.tokenId.toString())
 
-  // position was not able to be fetched
   if (position === undefined) {
-    context.log.error('Position not found ' + event.params.tokenId.toString())
-    return
+    position = {
+      id: event.params.tokenId.toString(),
+      // The owner gets correctly updated in the Transfer handler
+      owner: event.params.to,
+      pool_id: '',
+      token0_id: '',
+      token1_id: '',
+      tickLower: 0n,
+      tickUpper: 0n,
+      liquidity: 0n,
+      depositedToken0: 0n,
+      depositedToken1: 0n,
+      withdrawnToken0: 0n,
+      withdrawnToken1: 0n
+    } satisfies PositionEntity
   }
 
   const newPosition = {

@@ -10,8 +10,11 @@ import { fetchTokenDetails } from '../utils/token'
 import { WHITELIST_TOKENS } from '../utils/pricing'
 
 FactoryContract_PoolCreated_loader(({ event, context }) => {
+  context.contractRegistration.addPool(event.params.pool)
   context.Pool.load(event.params.pool, {})
   context.Factory.load(FACTORY_ADDRESS)
+  context.Token.load(event.params.token0)
+  context.Token.load(event.params.token1)
 })
 
 FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
