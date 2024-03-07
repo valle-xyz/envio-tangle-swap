@@ -69,6 +69,7 @@ networks:
       - name: NonfungiblePositionManager
         address: 0xbDdbea66383f6A8879701d22B8b45F887123736A
       - name: Pool
+        isAsync: true
         # address: [
         #   0xA0E105b9300Cfa9564126A705d6E5Bc9E05DE618,
         #   0x9522f7bF80d2c51D6359931eddf32cfc09ae15DE,
