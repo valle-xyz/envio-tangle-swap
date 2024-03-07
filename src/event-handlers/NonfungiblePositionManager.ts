@@ -3,11 +3,11 @@ import {
   // NonfungiblePositionManagerContract_IncreaseLiquidity_handler,
   NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync,
   NonfungiblePositionManagerContract_DecreaseLiquidity_loader,
-  NonfungiblePositionManagerContract_DecreaseLiquidity_handler,
   NonfungiblePositionManagerContract_Transfer_loader,
-  NonfungiblePositionManagerContract_Transfer_handler
+  NonfungiblePositionManagerContract_Transfer_handler,
+  NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync
 } from '../../generated/src/Handlers.gen'
-import { type PositionEntity, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs, type eventLog, type NonfungiblePositionManagerContract_TransferEvent_handlerContext, type NonfungiblePositionManagerContract_TransferEvent_eventArgs } from '../src/Types.gen'
+import { type PositionEntity, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_DecreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs, type eventLog, type NonfungiblePositionManagerContract_TransferEvent_handlerContext, type NonfungiblePositionManagerContract_TransferEvent_eventArgs } from '../src/Types.gen'
 
 NonfungiblePositionManagerContract_IncreaseLiquidity_loader(({ event, context }) => {
   context.Position.load(event.params.tokenId.toString(), {})
@@ -62,6 +62,8 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
     // update pool positionIds
     const newPool = {
       ...pool,
+      totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) + event.params.amount0,
+      totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) + event.params.amount1,
       positionIds: pool.positionIds === '' ? tokenId.toString() : pool.positionIds.concat(',', tokenId)
     }
     context.Pool.set(newPool)
@@ -77,19 +79,17 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
     depositedToken1: position.depositedToken1 + event.params.amount1
   }
 
-  // updateFeeVars(position, event, event.params.tokenId)
-
   context.Position.set(newPosition)
 
   savePositionSnapshot(newPosition, event, context)
 })
 
 NonfungiblePositionManagerContract_DecreaseLiquidity_loader(({ event, context }) => {
-  context.Position.load(event.params.tokenId.toString(), {})
+  context.Position.load(event.params.tokenId.toString(), { loaders: { loadPool: {} } })
 })
 
-NonfungiblePositionManagerContract_DecreaseLiquidity_handler(({ event, context }) => {
-  const position = context.Position.get(event.params.tokenId.toString())
+NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync(async ({ event, context }) => {
+  const position = await context.Position.get(event.params.tokenId.toString())
 
   // position was not able to be fetched
   if (position === undefined) {
@@ -104,11 +104,23 @@ NonfungiblePositionManagerContract_DecreaseLiquidity_handler(({ event, context }
     withdrawnToken1: position.withdrawnToken1 + event.params.amount1
   }
 
-  // updateFeeVars(position, event, event.params.tokenId)
-
   context.Position.set(newPosition)
 
   savePositionSnapshot(newPosition, event, context)
+
+  const pool = await context.Position.getPool(position)
+
+  if (pool === undefined) {
+    context.log.error('Pool not found')
+    return
+  }
+
+  const newPool = {
+    ...pool,
+    totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) - event.params.amount0,
+    totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) - event.params.amount1
+  }
+  context.Pool.set(newPool)
 })
 
 NonfungiblePositionManagerContract_Transfer_loader(({ event, context }) => {
@@ -171,7 +183,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
 
 function savePositionSnapshot (position: PositionEntity,
   event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs> | eventLog<NonfungiblePositionManagerContract_TransferEvent_eventArgs>,
-  context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_TransferEvent_handlerContext
+  context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_DecreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_TransferEvent_handlerContext
 ): void {
   context.PositionSnapshot.set({
     id: position.id.concat('#').concat(event.blockNumber.toString()),
