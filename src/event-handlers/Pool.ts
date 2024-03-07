@@ -9,8 +9,7 @@ import {
 } from '../../generated/src/Handlers.gen'
 import { type PoolEntity, type PoolPositionEntity } from '../src/Types.gen'
 import { getPositionKey } from '../utils'
-import { Position, Pool, SqrtPriceMath, TickMath } from '@uniswap/v3-sdk'
-import { BigintIsh, MaxUint256, Percent, Price, type CurrencyAmount, type Token } from '@uniswap/sdk-core'
+import { SqrtPriceMath, TickMath } from '@uniswap/v3-sdk'
 import JSBI from 'jsbi'
 
 PoolContract_Initialize_loader(({ event, context }) => {
@@ -78,9 +77,8 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
   context.Pool.set(newPool)
 
   // update all positions
-
   // iterate through all positionIds of pool
-  // example: "positionIds": "411,412,447,448,449,450"
+
   const positionIds = pool.positionIds.split(',')
   for (const positionId of positionIds) {
     const position = await context.Position.get(positionId)
