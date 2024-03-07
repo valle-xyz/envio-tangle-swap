@@ -6,7 +6,7 @@ import {
 import { ADDRESS_ZERO, FACTORY_ADDRESS, ZERO_BD, ZERO_BI } from '../utils/constants'
 
 import { type TokenEntity, type BundleEntity, type FactoryEntity, type PoolEntity } from '../../generated/src/Types.gen'
-import { fetchTokenSymbol, fetchTokenDecimals, fetchTokenName, fetchTokenTotalSupply } from '../utils/token'
+import { fetchTokenDetails } from '../utils/token'
 import { WHITELIST_TOKENS } from '../utils/pricing'
 
 FactoryContract_PoolCreated_loader(({ event, context }) => {
@@ -51,10 +51,7 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
 
   // fetch info if null
   if (token0 === undefined) {
-    const symbol = await fetchTokenSymbol(event.params.token0)
-    const name = await fetchTokenName(event.params.token0)
-    const totalSupply = await fetchTokenTotalSupply(event.params.token0)
-    const decimals = await fetchTokenDecimals(event.params.token0)
+    const { symbol, name, totalSupply, decimals } = await fetchTokenDetails(event.params.token0)
 
     // bail if we couldn't figure out the decimals
     if (decimals === null) {
@@ -83,10 +80,7 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
   }
 
   if (token1 === undefined) {
-    const symbol = await fetchTokenSymbol(event.params.token1)
-    const name = await fetchTokenName(event.params.token1)
-    const totalSupply = await fetchTokenTotalSupply(event.params.token1)
-    const decimals = await fetchTokenDecimals(event.params.token1)
+    const { symbol, name, totalSupply, decimals } = await fetchTokenDetails(event.params.token1)
 
     // bail if we couldn't figure out the decimals
     if (decimals === null) {
