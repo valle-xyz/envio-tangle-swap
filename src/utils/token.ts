@@ -20,8 +20,6 @@ export async function fetchTokenDetails (tokenAddress: string): Promise<TokenDet
     tokenDetailsData = {}
   }
 
-  console.log(tokenDetailsData, tokenAddress, tokenDetailsData[tokenAddress])
-
   if (Object.prototype.hasOwnProperty.call(tokenDetailsData, tokenAddress)) {
     const tokenDetails = tokenDetailsData[tokenAddress]
     return {
