@@ -58,6 +58,12 @@ export function bigDecimalExp18 (): bigint {
   return BigInt('1000000000000000000')
 }
 
+/**
+ * Converts a token amount to decimal based on the exchange decimals.
+ * @param tokenAmount The amount of tokens to convert as BigInt.
+ * @param exchangeDecimals The number of decimals of the token as BigInt.
+ * @returns The converted token amount as a number.
+ */
 export function convertTokenToDecimal (tokenAmount: bigint, exchangeDecimals: bigint): number {
   if (exchangeDecimals === BigInt(0)) {
     return Number(tokenAmount)

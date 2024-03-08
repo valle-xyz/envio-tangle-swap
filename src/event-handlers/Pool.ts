@@ -9,11 +9,11 @@ import {
   PoolContract_Burn_handler
 
 } from '../../generated/src/Handlers.gen'
-import { type PoolEntity, type PoolPositionEntity } from '../src/Types.gen'
+import { type BundleEntity, type PoolEntity, type PoolPositionEntity } from '../src/Types.gen'
 import { getPositionKey } from '../utils'
 import { SqrtPriceMath, TickMath } from '@uniswap/v3-sdk'
 import JSBI from 'jsbi'
-import { sqrtPriceX96ToTokenPrices } from '../utils/pricing'
+import { findEthPerToken, getEthPriceInUSD, sqrtPriceX96ToTokenPrices } from '../utils/pricing'
 
 PoolContract_Initialize_loader(({ event, context }) => {
   context.Pool.load(event.srcAddress, {})
@@ -142,6 +142,11 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
 
   context.Pool.set(newPool)
 
+  context.Bundle.set({
+    ...bundle,
+    ethPriceUSD: await getEthPriceInUSD(context)
+  })
+
   // update all positions
   // iterate through all positionIds of pool
 
@@ -222,11 +227,13 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
 
   context.Token.set({
     ...token0,
-    totalValueLocked: BigInt(token0.totalValueLocked) + event.params.amount0
+    totalValueLocked: BigInt(token0.totalValueLocked) + event.params.amount0,
+    derivedETH: await findEthPerToken(token0, context)
   })
 
   context.Token.set({
     ...token1,
-    totalValueLocked: BigInt(token1.totalValueLocked) + event.params.amount1
+    totalValueLocked: BigInt(token1.totalValueLocked) + event.params.amount1,
+    derivedETH: await findEthPerToken(token1, context)
   })
 })
