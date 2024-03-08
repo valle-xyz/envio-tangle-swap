@@ -52,12 +52,15 @@ contracts:
           - name: Pool
           - name: Position
           - name: Token
+          - name: Bundle
       - event: Mint
         requiredEntities:
-          - name: Mint
           - name: Token
           - name: Pool
           - name: PoolPosition
+      - event: Burn
+        requiredEntities:
+          - name: Pool
 networks:
   - id: 148 # Shimmer
     start_block: 35196

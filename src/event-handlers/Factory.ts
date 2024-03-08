@@ -78,10 +78,13 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
       totalValueLockedUSDUntracked: ZERO_BD,
       txCount: ZERO_BI,
       poolCount: ZERO_BI,
-      whitelistPoolsArray: ''
+      whitelistPoolIds: ''
     }
-    context.Token.set(token0)
   }
+  context.Token.set({
+    ...token0,
+    whitelistPoolIds: token0.whitelistPoolIds === '' ? event.params.pool : token0.whitelistPoolIds.concat(',', event.params.pool)
+  })
 
   if (token1 === undefined) {
     const { symbol, name, totalSupply, decimals } = await fetchTokenDetails(event.params.token1)
@@ -108,10 +111,13 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
       totalValueLockedUSDUntracked: ZERO_BD,
       txCount: ZERO_BI,
       poolCount: ZERO_BI,
-      whitelistPoolsArray: ''
+      whitelistPoolIds: ''
     }
-    context.Token.set(token1)
   }
+  context.Token.set({
+    ...token1,
+    whitelistPoolIds: token0.whitelistPoolIds === '' ? event.params.pool : token0.whitelistPoolIds.concat(',', event.params.pool)
+  })
 
   // create new pool
   const poolEntity: PoolEntity = {
