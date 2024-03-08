@@ -45,12 +45,13 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
   const token0 = await context.Pool.getToken0(pool)
   const token1 = await context.Pool.getToken1(pool)
 
+  if (token0 === undefined || token1 === undefined) {
+    context.log.error('Token not found')
+    return
+  }
+
   // Position got created in this tx
   if (position?.tickLower === 0n && position.tickUpper === 0n) {
-    if (token0 === undefined || token1 === undefined) {
-      context.log.error('Token not found')
-      return
-    }
     position = {
       ...position,
       // The owner gets correctly updated in the Transfer handler
@@ -153,6 +154,43 @@ NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync(async ({ event
     totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) - event.params.amount1
   }
   context.Pool.set(newPool)
+
+  const bundle = await context.Bundle.get('1')
+
+  if (bundle === undefined) {
+    context.log.error('Bundle not found')
+    return
+  }
+
+  const token0 = await context.Pool.getToken0(pool)
+  const token1 = await context.Pool.getToken1(pool)
+
+  if (token0 === undefined || token1 === undefined) {
+    context.log.error('Token not found')
+    return
+  }
+
+  // token 0
+
+  const totalValueLockedToken0 = BigInt(token0.totalValueLocked) - event.params.amount0
+  const totalValueLockedUSDToken0 = convertTokenToDecimal(totalValueLockedToken0, token0.decimals) * Number(token0.derivedETH) * Number(bundle.ethPriceUSD)
+
+  context.Token.set({
+    ...token0,
+    totalValueLocked: totalValueLockedToken0,
+    totalValueLockedUSD: totalValueLockedUSDToken0
+  })
+
+  // token 1
+
+  const totalValueLockedToken1 = BigInt(token1.totalValueLocked) - event.params.amount1
+  const totalValueLockedUSDToken1 = convertTokenToDecimal(totalValueLockedToken1, token1.decimals) * token1.derivedETH * bundle.ethPriceUSD
+
+  context.Token.set({
+    ...token1,
+    totalValueLocked: totalValueLockedToken1,
+    totalValueLockedUSD: totalValueLockedUSDToken1
+  })
 })
 
 NonfungiblePositionManagerContract_Transfer_loader(({ event, context }) => {
