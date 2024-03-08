@@ -71,7 +71,9 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
   const newPool: PoolEntity = {
     ...pool,
     tick,
-    sqrtPrice: sqrtPriceX96
+    sqrtPrice: sqrtPriceX96,
+    totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) + event.params.amount0,
+    totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) + event.params.amount1
   }
 
   context.Pool.set(newPool)

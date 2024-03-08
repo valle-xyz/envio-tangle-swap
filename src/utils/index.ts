@@ -58,11 +58,11 @@ export function bigDecimalExp18 (): bigint {
   return BigInt('1000000000000000000')
 }
 
-export function convertTokenToDecimal (tokenAmount: bigint, exchangeDecimals: bigint): bigint {
+export function convertTokenToDecimal (tokenAmount: bigint, exchangeDecimals: bigint): number {
   if (exchangeDecimals === BigInt(0)) {
-    return tokenAmount
+    return Number(tokenAmount)
   }
-  return tokenAmount / exponentToBigDecimal(exchangeDecimals)
+  return Number(tokenAmount) / Number(exponentToBigDecimal(exchangeDecimals))
 }
 
 export function convertEthToDecimal (eth: bigint): bigint {

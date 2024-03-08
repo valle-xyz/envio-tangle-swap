@@ -244,6 +244,7 @@ type Position @entity {
   withdrawnToken1: BigInt!
   amount0: BigInt
   amount1: BigInt
+  user: User!
   # all time collected token0 (withdrawnToken0 + collectedFeesToken0)
   # collectedToken0: Float!
   # all time collected token1 (withdrawnToken1 + collectedFeesToken1)
@@ -293,6 +294,13 @@ type PositionSnapshot @entity {
   # internal vars needed for fee computation
   # feeGrowthInside0LastX128: BigInt!
   # feeGrowthInside1LastX128: BigInt!
+}
+
+type User @entity {
+  id: ID!
+  totalValueLockedUSD: Float!
+  totalValueLockedETH: Float!
+  positions: [Position!]! @derivedFrom(field: "user")
 }
 
 type Transaction @entity {

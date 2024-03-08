@@ -43,6 +43,7 @@ describe('Transfers', () => {
       id: '2110',
       liquidity: 599862768n,
       owner: '0x9Eb0030189651113831513D912768Df4061EB87C',
+      user_id: '0x9Eb0030189651113831513D912768Df4061EB87C',
       tickLower: -877210n,
       tickUpper: 877220n,
       amount0: 0n,
