@@ -69,6 +69,7 @@ type Token @entity {
   # pools token is in that are white listed for USD pricing
   # Intermediate Table to link Tokens and Pools
   whitelistPools: [TokenPoolWhitelist!]! @derivedFrom(field: "token")
+  whitelistPoolsArray: String!
   # derived fields
   tokenDayData: [TokenDayData!]! @derivedFrom(field: "token")
 }

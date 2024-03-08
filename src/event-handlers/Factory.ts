@@ -77,7 +77,8 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
       totalValueLockedUSD: ZERO_BD,
       totalValueLockedUSDUntracked: ZERO_BD,
       txCount: ZERO_BI,
-      poolCount: ZERO_BI
+      poolCount: ZERO_BI,
+      whitelistPoolsArray: ''
     }
     context.Token.set(token0)
   }
@@ -106,7 +107,8 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
       totalValueLockedUSD: ZERO_BD,
       totalValueLockedUSDUntracked: ZERO_BD,
       txCount: ZERO_BI,
-      poolCount: ZERO_BI
+      poolCount: ZERO_BI,
+      whitelistPoolsArray: ''
     }
     context.Token.set(token1)
   }
