@@ -142,9 +142,11 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
 
   context.Pool.set(newPool)
 
+  const ethPriceUSD = await getEthPriceInUSD(context)
+
   context.Bundle.set({
     ...bundle,
-    ethPriceUSD: await getEthPriceInUSD(context)
+    ethPriceUSD
   })
 
   // update all positions
@@ -232,9 +234,9 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
   context.Token.set({
     ...token0,
     totalValueLocked: totalValueLockedToken0,
-    totalValueLockedUSD: convertTokenToDecimal(totalValueLockedToken0, token0.decimals) * Number(bundle.ethPriceUSD),
+    totalValueLockedUSD: convertTokenToDecimal(totalValueLockedToken0, token0.decimals) * ethPriceUSD,
     derivedETH: derivedEthToken0,
-    derivedUSD: derivedEthToken0 * Number(bundle.ethPriceUSD)
+    derivedUSD: derivedEthToken0 * ethPriceUSD
   })
 
   const derivedEthToken1 = await findEthPerToken(token1, context)
@@ -243,9 +245,9 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
   context.Token.set({
     ...token1,
     totalValueLocked: totalValueLockedToken1,
-    totalValueLockedUSD: convertTokenToDecimal(totalValueLockedToken1, token1.decimals) * Number(bundle.ethPriceUSD),
+    totalValueLockedUSD: convertTokenToDecimal(totalValueLockedToken1, token1.decimals) * ethPriceUSD,
     derivedETH: derivedEthToken1,
-    derivedUSD: derivedEthToken1 * Number(bundle.ethPriceUSD)
+    derivedUSD: derivedEthToken1 * ethPriceUSD
   })
 
   // Update all positions :)
