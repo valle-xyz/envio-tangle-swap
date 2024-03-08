@@ -19,13 +19,20 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_loader(({ event, context })
 })
 
 NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event, context }) => {
-  const poolPosition = await context.PoolPosition.get('last')
-  if (poolPosition === undefined) {
+  const bundle = await context.Bundle.get('1')
+
+  if (bundle === undefined) {
+    context.log.error('Bundle not found')
+    return
+  }
+
+  const lastPoolPosition = await context.PoolPosition.get('last') // used as cache
+  if (lastPoolPosition === undefined) {
     context.log.error('PoolPosition not found')
     return
   }
 
-  const pool = await context.PoolPosition.getPool(poolPosition)
+  const pool = await context.PoolPosition.getPool(lastPoolPosition)
 
   if (pool === undefined) {
     context.log.error('Pool not found')
@@ -48,7 +55,7 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
     return
   }
 
-  // Position got created in this tx
+  // Position got created in this tx when tick is not set
   if (position?.tickLower === 0n && position.tickUpper === 0n) {
     position = {
       ...position,
@@ -56,8 +63,8 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
       pool_id: pool.id,
       token0_id: token0.id,
       token1_id: token1.id,
-      tickLower: poolPosition.tickLower,
-      tickUpper: poolPosition.tickUpper
+      tickLower: lastPoolPosition.tickLower,
+      tickUpper: lastPoolPosition.tickUpper
     } satisfies PositionEntity
 
     // update pool positionIds
@@ -68,6 +75,12 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
       positionIds: pool.positionIds === '' ? tokenId.toString() : pool.positionIds.concat(',', tokenId)
     }
     context.Pool.set(newPool)
+
+    // add positionId to bundle
+    context.Bundle.set({
+      ...bundle,
+      allPositionIds: bundle.allPositionIds === '' ? tokenId.toString() : bundle.allPositionIds.concat(',', tokenId)
+    })
   }
 
   // const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
@@ -83,13 +96,6 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
   context.Position.set(newPosition)
 
   savePositionSnapshot(newPosition, event, context)
-
-  const bundle = await context.Bundle.get('1')
-
-  if (bundle === undefined) {
-    context.log.error('Bundle not found')
-    return
-  }
 
   // token 0
 
@@ -217,8 +223,9 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
       depositedToken1: 0n,
       withdrawnToken0: 0n,
       withdrawnToken1: 0n,
-      amount0: undefined,
-      amount1: undefined
+      amount0: 0n,
+      amount1: 0n,
+      totalValueLockedUSD: 0n
     } satisfies PositionEntity
   }
 

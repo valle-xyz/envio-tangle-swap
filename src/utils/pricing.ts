@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { type PoolEntity, type FactoryContract_PoolCreatedEvent_handlerContextAsync, type TokenEntity, type PoolContract_SwapEvent_handlerContext, type PoolContract_SwapEvent_handlerContextAsync } from '../src/Types.gen'
+import { type FactoryContract_PoolCreatedEvent_handlerContextAsync, type TokenEntity, type PoolContract_SwapEvent_handlerContextAsync } from '../src/Types.gen'
 import { convertTokenToDecimal, exponentToBigDecimal } from '../utils/index'
 
 const SMR_ADDRESS = '0x1074010000000000000000000000000000000000'
@@ -63,7 +63,7 @@ export async function findEthPerToken (token: TokenEntity, context: PoolContract
   if (token.id === SMR_ADDRESS) {
     return 1
   }
-  let poolIds = await token.whitelistPoolIds.split(',')
+  let poolIds = token.whitelistPoolIds.split(',')
   // for now just take USD from pool with greatest TVL
   // need to update this to actually detect best rate based on liquidity distribution
   let largestLiquidityETH = 0

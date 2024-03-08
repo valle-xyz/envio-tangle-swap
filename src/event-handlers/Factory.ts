@@ -41,7 +41,8 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
     // create new bundle for tracking eth price
     const bundle: BundleEntity = {
       id: '1',
-      ethPriceUSD: ZERO_BD
+      ethPriceUSD: ZERO_BD,
+      allPositionIds: ''
     }
     context.Bundle.set(bundle)
   }

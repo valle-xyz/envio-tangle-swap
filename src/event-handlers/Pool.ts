@@ -9,7 +9,7 @@ import {
   PoolContract_Burn_handler
 
 } from '../../generated/src/Handlers.gen'
-import { type BundleEntity, type PoolEntity, type PoolPositionEntity } from '../src/Types.gen'
+import { type PoolEntity, type PoolPositionEntity } from '../src/Types.gen'
 import { convertTokenToDecimal, getPositionKey } from '../utils'
 import { SqrtPriceMath, TickMath } from '@uniswap/v3-sdk'
 import JSBI from 'jsbi'
@@ -142,16 +142,10 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
 
   context.Pool.set(newPool)
 
-  const newEthPrice = await getEthPriceInUSD(context)
-
-  let shouldUpdateAllPositions = false
-  if (newEthPrice !== bundle.ethPriceUSD) {
-    context.Bundle.set({
-      ...bundle,
-      ethPriceUSD: await getEthPriceInUSD(context)
-    })
-    shouldUpdateAllPositions = true // will be done at the end of this function
-  }
+  context.Bundle.set({
+    ...bundle,
+    ethPriceUSD: await getEthPriceInUSD(context)
+  })
 
   // update all positions
   // iterate through all positionIds of pool
@@ -209,26 +203,27 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
 
     context.Position.set(newPosition)
 
-    context.PositionSnapshot.set({
-      id: position.id.concat('#').concat(event.blockNumber.toString()),
-      owner: position.owner,
-      pool_id: position.pool_id,
-      position_id: position.id,
-      blockNumber: BigInt(event.blockNumber),
-      timestamp: BigInt(event.blockTimestamp),
-      liquidity: position.liquidity,
-      depositedToken0: position.depositedToken0,
-      depositedToken1: position.depositedToken1,
-      withdrawnToken0: position.withdrawnToken0,
-      withdrawnToken1: position.withdrawnToken1,
-      // collectedFeesToken0: position.collectedFeesToken0,
-      // collectedFeesToken1: position.collectedFeesToken1,
-      transaction_id: 'tx',
-      amount0: token0Amount,
-      amount1: token1Amount
-    // feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
-    // feeGrowthInside1LastX128: position.feeGrowthInside1LastX128
-    })
+    // set later for all positions
+    // context.PositionSnapshot.set({
+    //   id: position.id.concat('#').concat(event.blockNumber.toString()),
+    //   owner: position.owner,
+    //   pool_id: position.pool_id,
+    //   position_id: position.id,
+    //   blockNumber: BigInt(event.blockNumber),
+    //   timestamp: BigInt(event.blockTimestamp),
+    //   liquidity: position.liquidity,
+    //   depositedToken0: position.depositedToken0,
+    //   depositedToken1: position.depositedToken1,
+    //   withdrawnToken0: position.withdrawnToken0,
+    //   withdrawnToken1: position.withdrawnToken1,
+    //   // collectedFeesToken0: position.collectedFeesToken0,
+    //   // collectedFeesToken1: position.collectedFeesToken1,
+    //   transaction_id: 'tx',
+    //   amount0: token0Amount,
+    //   amount1: token1Amount
+    // // feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
+    // // feeGrowthInside1LastX128: position.feeGrowthInside1LastX128
+    // })
   }
 
   const derivedEthToken0 = await findEthPerToken(token0, context)
@@ -253,7 +248,77 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
     derivedUSD: derivedEthToken1 * Number(bundle.ethPriceUSD)
   })
 
-  if (shouldUpdateAllPositions) {
-    // update all positions
+  // Update all positions :)
+
+  const allPositionIds = bundle.allPositionIds.split(',')
+
+  for (const positionId of allPositionIds) {
+    const position = await context.Position.get(positionId)
+
+    if (position === undefined) {
+      context.log.error('Position not found at update all: ' + positionId)
+      continue
+    }
+
+    const t0 = await context.Position.getToken0(position)
+    const t1 = await context.Position.getToken1(position)
+
+    const totalValueLockedUSDToken0 = convertTokenToDecimal(position.amount0, t0.decimals) * Number(t0.derivedUSD)
+    const totalValueLockedUSDToken1 = convertTokenToDecimal(position.amount1, t1.decimals) * Number(t1.derivedUSD)
+    const totalValueLockedUSD = totalValueLockedUSDToken0 + totalValueLockedUSDToken1
+
+    context.Position.set(({
+      ...position,
+      totalValueLockedUSD
+    }))
+
+    context.PositionSnapshot.set({
+      id: position.id.concat('#').concat(event.blockNumber.toString()),
+      owner: position.owner,
+      pool_id: position.pool_id,
+      position_id: position.id,
+      blockNumber: BigInt(event.blockNumber),
+      timestamp: BigInt(event.blockTimestamp),
+      liquidity: position.liquidity,
+      depositedToken0: position.depositedToken0,
+      depositedToken1: position.depositedToken1,
+      withdrawnToken0: position.withdrawnToken0,
+      withdrawnToken1: position.withdrawnToken1,
+      transaction_id: 'tx',
+      amount0: position.amount0,
+      amount1: position.amount1
+    })
+
+    // update user hour data
+
+    const roundedTimestamp = event.blockTimestamp - event.blockTimestamp % 3600
+    const id = position.owner.concat('-').concat((roundedTimestamp).toString())
+
+    let userHourData = await context.UserHourData.get(id)
+
+    if (userHourData === undefined) {
+      userHourData = {
+        id,
+        user_id: position.owner,
+        timestamp: roundedTimestamp,
+        totalValueLockedUSD: 0,
+        lastTransaction: ''
+      }
+    }
+    /// When last transaction is not the same, we reset the totalValueLockedUSD
+    if (userHourData.lastTransaction !== event.transactionHash) {
+      userHourData = {
+        ...userHourData,
+        lastTransaction: event.transactionHash,
+        totalValueLockedUSD
+      }
+    } else {
+      /// else we add the totalValueLockedUSD to the existing one
+      userHourData = {
+        ...userHourData,
+        totalValueLockedUSD: userHourData.totalValueLockedUSD + totalValueLockedUSD
+      }
+    }
+    context.UserHourData.set(userHourData)
   }
 })

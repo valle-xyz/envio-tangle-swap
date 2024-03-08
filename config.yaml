@@ -53,6 +53,7 @@ contracts:
           - name: Position
           - name: Token
           - name: Bundle
+          - name: UserHourData
       - event: Mint
         requiredEntities:
           - name: Token
