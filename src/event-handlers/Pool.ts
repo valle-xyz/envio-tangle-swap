@@ -102,7 +102,7 @@ PoolContract_Burn_handler(({ event, context }) => {
 })
 
 PoolContract_Swap_loader(({ event, context }) => {
-  context.Pool.load(event.srcAddress, { loaders: { loadToken0: true, loadToken1: true } })
+  context.Pool.load(event.srcAddress, { loadToken0: true, loadToken1: true })
   context.Bundle.load('1')
 })
 
@@ -142,10 +142,16 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
 
   context.Pool.set(newPool)
 
-  context.Bundle.set({
-    ...bundle,
-    ethPriceUSD: await getEthPriceInUSD(context)
-  })
+  const newEthPrice = await getEthPriceInUSD(context)
+
+  let shouldUpdateAllPositions = false
+  if (newEthPrice !== bundle.ethPriceUSD) {
+    context.Bundle.set({
+      ...bundle,
+      ethPriceUSD: await getEthPriceInUSD(context)
+    })
+    shouldUpdateAllPositions = true // will be done at the end of this function
+  }
 
   // update all positions
   // iterate through all positionIds of pool
@@ -246,4 +252,8 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
     derivedETH: derivedEthToken1,
     derivedUSD: derivedEthToken1 * Number(bundle.ethPriceUSD)
   })
+
+  if (shouldUpdateAllPositions) {
+    // update all positions
+  }
 })

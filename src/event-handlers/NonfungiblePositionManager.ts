@@ -13,9 +13,7 @@ import { convertTokenToDecimal } from '../utils'
 NonfungiblePositionManagerContract_IncreaseLiquidity_loader(({ event, context }) => {
   context.Position.load(event.params.tokenId.toString(), {})
   context.PoolPosition.load('last', {
-    loaders: {
-      loadPool: { loadToken0: true, loadToken1: true }
-    }
+    loadPool: { loadToken0: true, loadToken1: true }
   })
   context.Bundle.load('1')
 })
@@ -117,7 +115,7 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
 })
 
 NonfungiblePositionManagerContract_DecreaseLiquidity_loader(({ event, context }) => {
-  context.Position.load(event.params.tokenId.toString(), { loaders: { loadPool: { loadToken0: true, loadToken1: true } } })
+  context.Position.load(event.params.tokenId.toString(), { loadPool: { loadToken0: true, loadToken1: true } })
   context.Bundle.load('1')
 })
 
