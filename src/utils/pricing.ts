@@ -44,7 +44,7 @@ export async function getEthPriceInUSD (context: FactoryContract_PoolCreatedEven
   let usdtPool = await context.Pool.get(USDT_SMR_03_POOL)
 
   if (usdtPool === undefined) {
-    context.log.warn('USDT pool not found, returning Eth price of 0')
+    // context.log.warn('USDT pool not found, returning Eth price of 0')
     return 0
   }
 
@@ -71,7 +71,7 @@ export async function findEthPerToken (token: TokenEntity, context: PoolContract
   for (let i = 0; i < poolIds.length; ++i) {
     const pool = await context.Pool.get(poolIds[i])
     if (pool === undefined) {
-      context.log.warn('Pool not found at findEthPerToken, returning 0')
+      // context.log.warn('Pool not found at findEthPerToken, returning 0')
       return 0
     }
     if (pool.liquidity > 0n) {
@@ -79,7 +79,7 @@ export async function findEthPerToken (token: TokenEntity, context: PoolContract
         // whitelist token is token1
         const token1 = await context.Token.get(pool.token1_id)
         if (token1 === undefined) {
-          context.log.warn('Token not found at findEthPerToken, returning 0')
+          // context.log.warn('Token not found at findEthPerToken, returning 0')
           return 0
         }
         // get the derived ETH in pool
@@ -93,7 +93,7 @@ export async function findEthPerToken (token: TokenEntity, context: PoolContract
       if (pool.token1_id === token.id) {
         const token0 = await context.Token.get(pool.token0_id)
         if (token0 === undefined) {
-          context.log.warn('Token not found at findEthPerToken, returning 0')
+          // context.log.warn('Token not found at findEthPerToken, returning 0')
           return 0
         }
         // get the derived ETH in pool

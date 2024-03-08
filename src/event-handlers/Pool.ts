@@ -10,7 +10,7 @@ import {
 
 } from '../../generated/src/Handlers.gen'
 import { type BundleEntity, type PoolEntity, type PoolPositionEntity } from '../src/Types.gen'
-import { getPositionKey } from '../utils'
+import { convertTokenToDecimal, getPositionKey } from '../utils'
 import { SqrtPriceMath, TickMath } from '@uniswap/v3-sdk'
 import JSBI from 'jsbi'
 import { findEthPerToken, getEthPriceInUSD, sqrtPriceX96ToTokenPrices } from '../utils/pricing'
@@ -225,15 +225,25 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
     })
   }
 
+  const derivedEthToken0 = await findEthPerToken(token0, context)
+  const totalValueLockedToken0 = BigInt(pool.totalValueLockedToken0) + event.params.amount0
+
   context.Token.set({
     ...token0,
-    totalValueLocked: BigInt(token0.totalValueLocked) + event.params.amount0,
-    derivedETH: await findEthPerToken(token0, context)
+    totalValueLocked: totalValueLockedToken0,
+    totalValueLockedUSD: convertTokenToDecimal(totalValueLockedToken0, token0.decimals) * Number(bundle.ethPriceUSD),
+    derivedETH: derivedEthToken0,
+    derivedUSD: derivedEthToken0 * Number(bundle.ethPriceUSD)
   })
+
+  const derivedEthToken1 = await findEthPerToken(token1, context)
+  const totalValueLockedToken1 = BigInt(pool.totalValueLockedToken1) + event.params.amount1
 
   context.Token.set({
     ...token1,
-    totalValueLocked: BigInt(token1.totalValueLocked) + event.params.amount1,
-    derivedETH: await findEthPerToken(token1, context)
+    totalValueLocked: totalValueLockedToken1,
+    totalValueLockedUSD: convertTokenToDecimal(totalValueLockedToken1, token1.decimals) * Number(bundle.ethPriceUSD),
+    derivedETH: derivedEthToken1,
+    derivedUSD: derivedEthToken1 * Number(bundle.ethPriceUSD)
   })
 })

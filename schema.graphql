@@ -66,6 +66,7 @@ type Token @entity {
   totalValueLockedUSDUntracked: Float!
   # derived price in ETH
   derivedETH: Float!
+  derivedUSD: Float!
   # pools token is in that are white listed for USD pricing
   # Intermediate Table to link Tokens and Pools
   whitelistPools: [TokenPoolWhitelist!]! @derivedFrom(field: "token")
