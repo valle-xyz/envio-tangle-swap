@@ -34,6 +34,7 @@ contracts:
           - name: Pool
           - name: PositionSnapshot
           - name: Token
+          - name: Bundle
       - event: Transfer
         requiredEntities:
           - name: Position

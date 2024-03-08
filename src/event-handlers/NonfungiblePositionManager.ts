@@ -116,7 +116,8 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
 })
 
 NonfungiblePositionManagerContract_DecreaseLiquidity_loader(({ event, context }) => {
-  context.Position.load(event.params.tokenId.toString(), { loaders: { loadPool: {} } })
+  context.Position.load(event.params.tokenId.toString(), { loaders: { loadPool: { loadToken0: true, loadToken1: true } } })
+  context.Bundle.load('1')
 })
 
 NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync(async ({ event, context }) => {

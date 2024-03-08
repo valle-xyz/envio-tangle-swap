@@ -59,7 +59,7 @@ type Token @entity {
   # number of pools containing this token
   poolCount: BigInt!
   # liquidity across all pools in token units
-  totalValueLocked: Float!
+  totalValueLocked: BigInt!
   # liquidity across all pools in derived USD
   totalValueLockedUSD: Float!
   # TVL derived in USD untracked
