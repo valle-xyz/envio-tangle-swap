@@ -26,6 +26,7 @@ contracts:
           - name: PositionSnapshot
           - name: PoolPosition
           - name: Token
+          - name: Bundle
       - event: DecreaseLiquidity
         isAsync: true
         requiredEntities:
@@ -33,6 +34,7 @@ contracts:
           - name: Pool
           - name: PositionSnapshot
           - name: Token
+          - name: Bundle
       - event: Transfer
         requiredEntities:
           - name: Position
@@ -50,12 +52,16 @@ contracts:
           - name: Pool
           - name: Position
           - name: Token
+          - name: Bundle
+          - name: UserHourData
       - event: Mint
         requiredEntities:
-          - name: Mint
           - name: Token
           - name: Pool
           - name: PoolPosition
+      - event: Burn
+        requiredEntities:
+          - name: Pool
 networks:
   - id: 148 # Shimmer
     start_block: 35196

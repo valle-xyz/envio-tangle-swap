@@ -32,8 +32,10 @@
     "@uniswap/sdk-core": "^4.1.4",
     "@uniswap/v3-sdk": "^3.10.2",
     "chai": "4.3.10",
-    "envio": "0.0.32-float-db-decode-fix",
+    "envio": "0.0.32-float-string-encode-fix",
     "ethers": "6.8.0",
+    "i": "^0.3.7",
+    "pnpm": "^8.15.4",
     "viem": "1.16.6"
   }
 }

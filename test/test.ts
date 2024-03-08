@@ -43,6 +43,7 @@ describe('Transfers', () => {
       id: '2110',
       liquidity: 599862768n,
       owner: '0x9Eb0030189651113831513D912768Df4061EB87C',
+      user_id: '0x9Eb0030189651113831513D912768Df4061EB87C',
       tickLower: -877210n,
       tickUpper: 877220n,
       amount0: 0n,
@@ -53,7 +54,8 @@ describe('Transfers', () => {
       token0_id: '0xa4f8C7C1018b9dD3be5835bF00f335D9910aF6Bd',
       token1_id: '0xeCE555d37C37D55a6341b80cF35ef3BC57401d1A',
       withdrawnToken0: 0n,
-      withdrawnToken1: 0n
+      withdrawnToken1: 0n,
+      totalValueLockedUSD: 0n
     }
 
     const swapEvent = Pool.Swap.createMockEvent({

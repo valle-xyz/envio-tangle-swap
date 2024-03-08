@@ -33,6 +33,8 @@ type Bundle @entity {
   id: ID!
   # price of ETH in usd
   ethPriceUSD: Float!
+  # unsexy, but necessary as loading many entities is not yet supported
+  allPositionIds: String!
 }
 
 type Token @entity {
@@ -59,16 +61,18 @@ type Token @entity {
   # number of pools containing this token
   poolCount: BigInt!
   # liquidity across all pools in token units
-  totalValueLocked: Float!
+  totalValueLocked: BigInt!
   # liquidity across all pools in derived USD
   totalValueLockedUSD: Float!
   # TVL derived in USD untracked
   totalValueLockedUSDUntracked: Float!
   # derived price in ETH
   derivedETH: Float!
+  derivedUSD: Float!
   # pools token is in that are white listed for USD pricing
   # Intermediate Table to link Tokens and Pools
   whitelistPools: [TokenPoolWhitelist!]! @derivedFrom(field: "token")
+  whitelistPoolIds: String!
   # derived fields
   tokenDayData: [TokenDayData!]! @derivedFrom(field: "token")
 }
@@ -242,8 +246,10 @@ type Position @entity {
   withdrawnToken0: BigInt!
   # amount of token 1 ever withdrawn from position (without fees)
   withdrawnToken1: BigInt!
-  amount0: BigInt
-  amount1: BigInt
+  amount0: BigInt!
+  amount1: BigInt!
+  user: User!
+  totalValueLockedUSD: Float!
   # all time collected token0 (withdrawnToken0 + collectedFeesToken0)
   # collectedToken0: Float!
   # all time collected token1 (withdrawnToken1 + collectedFeesToken1)
@@ -293,6 +299,21 @@ type PositionSnapshot @entity {
   # internal vars needed for fee computation
   # feeGrowthInside0LastX128: BigInt!
   # feeGrowthInside1LastX128: BigInt!
+}
+
+type User @entity {
+  id: ID!
+  totalValueLockedUSD: Float!
+  totalValueLockedETH: Float!
+  positions: [Position!]! @derivedFrom(field: "user")
+}
+
+type UserHourData @entity {
+  id: ID!
+  user: User!
+  timestamp: Int! # unix timestamp for start of hour
+  lastTransaction: String!
+  totalValueLockedUSD: Float!
 }
 
 type Transaction @entity {

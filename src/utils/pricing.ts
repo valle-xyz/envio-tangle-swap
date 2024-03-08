@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
-import { type PoolEntity, type FactoryContract_PoolCreatedEvent_handlerContextAsync, type TokenEntity } from '../src/Types.gen'
-import { exponentToBigDecimal } from '../utils/index'
+import { type FactoryContract_PoolCreatedEvent_handlerContextAsync, type TokenEntity, type PoolContract_SwapEvent_handlerContextAsync } from '../src/Types.gen'
+import { convertTokenToDecimal, exponentToBigDecimal } from '../utils/index'
 
 const SMR_ADDRESS = '0x1074010000000000000000000000000000000000'
 const USDT_SMR_03_POOL = '0xA0E105b9300Cfa9564126A705d6E5Bc9E05DE618'
@@ -40,8 +40,13 @@ export function sqrtPriceX96ToTokenPrices (sqrtPriceX96: bigint, token0: TokenEn
   return [price0, price1]
 }
 
-export async function getEthPriceInUSD (context: FactoryContract_PoolCreatedEvent_handlerContextAsync): Promise<number> {
-  let usdtPool: PoolEntity | undefined = await context.Pool.get(USDT_SMR_03_POOL)
+export async function getEthPriceInUSD (context: FactoryContract_PoolCreatedEvent_handlerContextAsync | PoolContract_SwapEvent_handlerContextAsync): Promise<number> {
+  let usdtPool = await context.Pool.get(USDT_SMR_03_POOL)
+
+  if (usdtPool === undefined) {
+    // context.log.warn('USDT pool not found, returning Eth price of 0')
+    return 0
+  }
 
   if (usdtPool !== undefined && Number(usdtPool.totalValueLockedToken0) > MINIMUM_ETH_LOCKED) {
     return Number(usdtPool.token1Price)
@@ -50,49 +55,59 @@ export async function getEthPriceInUSD (context: FactoryContract_PoolCreatedEven
   }
 }
 
-// /**
-//  * Search through graph to find derived Eth per token.
-//  * @todo update to be derived ETH (add stablecoin estimates)
-//  **/
-// export function findEthPerToken (token: Token): BigDecimal {
-//   if (token.id === SMR_ADDRESS) {
-//     return ONE_BD
-//   }
-//   // TODO: query whitelists
-//   let whiteList = token.whitelistPools
-//   // for now just take USD from pool with greatest TVL
-//   // need to update this to actually detect best rate based on liquidity distribution
-//   let largestLiquidityETH = ZERO_BD
-//   let priceSoFar = ZERO_BD
-//   for (let i = 0; i < whiteList.length; ++i) {
-//     let poolAddress = whiteList[i]
-//     let pool = Pool.load(poolAddress)
-//     if (pool.liquidity > ZERO_BI) {
-//       if (pool.token0 === token.id) {
-//         // whitelist token is token1
-//         let token1 = Token.load(pool.token1)
-//         // get the derived ETH in pool
-//         let ethLocked = pool.totalValueLockedToken1.times(token1.derivedETH)
-//         if (ethLocked > largestLiquidityETH && ethLocked > MINIMUM_ETH_LOCKED) {
-//           largestLiquidityETH = ethLocked
-//           // token1 per our token * Eth per token1
-//           priceSoFar = pool.token1Price.times(token1.derivedETH as BigDecimal)
-//         }
-//       }
-//       if (pool.token1 === token.id) {
-//         let token0 = Token.load(pool.token0)
-//         // get the derived ETH in pool
-//         let ethLocked = pool.totalValueLockedToken0.times(token0.derivedETH)
-//         if (ethLocked > largestLiquidityETH && ethLocked > MINIMUM_ETH_LOCKED) {
-//           largestLiquidityETH = ethLocked
-//           // token0 per our token * ETH per token0
-//           priceSoFar = pool.token0Price.times(token0.derivedETH as BigDecimal)
-//         }
-//       }
-//     }
-//   }
-//   return priceSoFar // nothing was found return 0
-// }
+/**
+ * Search through graph to find derived Eth per token.
+ * @todo update to be derived ETH (add stablecoin estimates)
+ **/
+export async function findEthPerToken (token: TokenEntity, context: PoolContract_SwapEvent_handlerContextAsync): Promise<number> {
+  if (token.id === SMR_ADDRESS) {
+    return 1
+  }
+  let poolIds = token.whitelistPoolIds.split(',')
+  // for now just take USD from pool with greatest TVL
+  // need to update this to actually detect best rate based on liquidity distribution
+  let largestLiquidityETH = 0
+  let priceSoFar = 0
+  for (let i = 0; i < poolIds.length; ++i) {
+    const pool = await context.Pool.get(poolIds[i])
+    if (pool === undefined) {
+      // context.log.warn('Pool not found at findEthPerToken, returning 0')
+      return 0
+    }
+    if (pool.liquidity > 0n) {
+      if (pool.token0_id === token.id) {
+        // whitelist token is token1
+        const token1 = await context.Token.get(pool.token1_id)
+        if (token1 === undefined) {
+          // context.log.warn('Token not found at findEthPerToken, returning 0')
+          return 0
+        }
+        // get the derived ETH in pool
+        let ethLocked = convertTokenToDecimal(pool.totalValueLockedToken1, token1.decimals) * token1.derivedETH
+        if (ethLocked > largestLiquidityETH && ethLocked > MINIMUM_ETH_LOCKED) {
+          largestLiquidityETH = ethLocked
+          // token1 per our token * Eth per token1
+          priceSoFar = Number(pool.token1Price) * Number(token1.derivedETH)
+        }
+      }
+      if (pool.token1_id === token.id) {
+        const token0 = await context.Token.get(pool.token0_id)
+        if (token0 === undefined) {
+          // context.log.warn('Token not found at findEthPerToken, returning 0')
+          return 0
+        }
+        // get the derived ETH in pool
+        let ethLocked = convertTokenToDecimal(pool.totalValueLockedToken0, token0.decimals) * token0.derivedETH
+        if (ethLocked > largestLiquidityETH && ethLocked > MINIMUM_ETH_LOCKED) {
+          largestLiquidityETH = ethLocked
+          // token0 per our token * Eth per token0
+          priceSoFar = Number(pool.token0Price) * Number(token0.derivedETH)
+        }
+      }
+    }
+  }
+  return priceSoFar // nothing was found return 0
+}
 
 // /**
 //  * Accepts tokens and amounts, return tracked amount based on token whitelist
