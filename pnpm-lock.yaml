@@ -18,11 +18,17 @@ importers:
         specifier: 4.3.10
         version: 4.3.10
       envio:
-        specifier: 0.0.32-float-db-decode-fix
-        version: 0.0.32-float-db-decode-fix
+        specifier: 0.0.32-float-string-encode-fix
+        version: 0.0.32-float-string-encode-fix
       ethers:
         specifier: 6.8.0
         version: 6.8.0
+      i:
+        specifier: ^0.3.7
+        version: 0.3.7
+      pnpm:
+        specifier: ^8.15.4
+        version: 8.15.4
       viem:
         specifier: 1.16.6
         version: 1.16.6(typescript@5.2.2)
@@ -1966,37 +1972,37 @@ packages:
     engines: {node: '>=6'}
     dev: false
 
-  /envio-darwin-arm64@0.0.32-float-db-decode-fix:
-    resolution: {integrity: sha512-VSwqLHJQ+nmKIYjuEqvA15E6u2O6cmyIdENGljEiRWriJQNfNVMl3CQEtj34fmoSBrRQ4McU7/LJVaDSBJG02Q==}
+  /envio-darwin-arm64@0.0.32-float-string-encode-fix:
+    resolution: {integrity: sha512-OSwlibUpJeksFephLZzEDTEiOt/UgLWmaNzx3dO231boXHpB8Fm64dyqynB5WlzpJvLyjI7fUffqto0z1Bc5DA==}
     cpu: [arm64]
     os: [darwin]
     requiresBuild: true
     dev: false
     optional: true
 
-  /envio-darwin-x64@0.0.32-float-db-decode-fix:
-    resolution: {integrity: sha512-8AN0KEyPf1Bf+NTIFOObSYRcY7CrxemFwD+MI7oWtVLbXW90UeZiAZseEcmiskqfWMrlJUWaGylc/MWOAv2OEQ==}
+  /envio-darwin-x64@0.0.32-float-string-encode-fix:
+    resolution: {integrity: sha512-jQgS/Yk2Uec4h+17WxDxncos1hYWj0lZnRezMJKuEb4c7mK7eUmMendBSflufUmPUBEHTbxEX9DLQ/33NRFG5w==}
     cpu: [x64]
     os: [darwin]
     requiresBuild: true
     dev: false
     optional: true
 
-  /envio-linux-x64@0.0.32-float-db-decode-fix:
-    resolution: {integrity: sha512-KWGOGgRSFTVmmBcme0fap7Djqb9/yozoloYKS3gJAXAtSYtZwaL5BZwvi1/wr0TKt7D8wxvdv0rfW1mbZOCqxA==}
+  /envio-linux-x64@0.0.32-float-string-encode-fix:
+    resolution: {integrity: sha512-tJMxrzO3StOLL3FG1cqpv3jMdTEc/dheBD3nbD3d8/GtzEdjZIk/Ofg7SH80qRXlIRevA6xAPrISt72ITfrlXQ==}
     cpu: [x64]
     os: [linux]
     requiresBuild: true
     dev: false
     optional: true
 
-  /envio@0.0.32-float-db-decode-fix:
-    resolution: {integrity: sha512-Bo7AxxynNyJ67Ha4BPJK4k9TYCspYom3cfGR2pdzuOS0lK3ujpnOuyWhxoKL+AG8ZOqWj6ktWlpVFld4TI9JGQ==}
+  /envio@0.0.32-float-string-encode-fix:
+    resolution: {integrity: sha512-A4xOLCnNnC3BDgVKQfnxGDrEFMuJteBJmuPV3Xa/33y4sPR2jSON8vl/HRXauuyN42zEyOyZ1FL6SqBvTxZyDQ==}
     hasBin: true
     optionalDependencies:
-      envio-darwin-arm64: 0.0.32-float-db-decode-fix
-      envio-darwin-x64: 0.0.32-float-db-decode-fix
-      envio-linux-x64: 0.0.32-float-db-decode-fix
+      envio-darwin-arm64: 0.0.32-float-string-encode-fix
+      envio-darwin-x64: 0.0.32-float-string-encode-fix
+      envio-linux-x64: 0.0.32-float-string-encode-fix
     dev: false
 
   /es-abstract@1.22.5:
@@ -2955,6 +2961,11 @@ packages:
       - supports-color
     dev: false
 
+  /i@0.3.7:
+    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
+    engines: {node: '>=0.4'}
+    dev: false
+
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
     engines: {node: '>=0.10.0'}
@@ -3726,6 +3737,12 @@ packages:
       safe-stable-stringify: 2.4.3
       sonic-boom: 3.8.0
       thread-stream: 2.4.1
+    dev: false
+
+  /pnpm@8.15.4:
+    resolution: {integrity: sha512-C9Opvp6w6aaSZ23uwAowO6IYuiedmSQUdWFrOY267t0RFG+SwoQ0WPVXsdEn4J1MFx4QW9zWthACs5aFqAFrng==}
+    engines: {node: '>=16.14'}
+    hasBin: true
     dev: false
 
   /possible-typed-array-names@1.0.0:
