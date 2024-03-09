@@ -225,7 +225,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
       withdrawnToken1: 0n,
       amount0: 0n,
       amount1: 0n,
-      totalValueLockedUSD: 0n
+      totalValueLockedUSD: 0,
     } satisfies PositionEntity
   }
 
@@ -257,7 +257,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
 //   return position
 // }
 
-function savePositionSnapshot (position: PositionEntity,
+function savePositionSnapshot(position: PositionEntity,
   event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs> | eventLog<NonfungiblePositionManagerContract_TransferEvent_eventArgs>,
   context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_DecreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_TransferEvent_handlerContext
 ): void {
