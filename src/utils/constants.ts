@@ -4,11 +4,13 @@ export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
 export const FACTORY_ADDRESS = '0xdf7bA717FB0D5ce579252f05167cD96d0fA77bCb'
 export const POSITION_MANAGER_ADDRESS = '0xbDdbea66383f6A8879701d22B8b45F887123736A'
 
-export let ZERO_BI = 0n
-export let ONE_BI = 1n
-export let ZERO_BD = 0
-export let ONE_BD = 1
-export let BI_18 = 18n
+export const ZERO_BI = 0n
+export const ONE_BI = 1n
+export const ZERO_BD = 0
+export const ONE_BD = 1
+export const BI_18 = 18n
+
+export const endTime = 1707919200
 
 export let POOL_ADDRESSES: string[] = [
   '0xa0e105b9300cfa9564126a705d6e5bc9e05de618',
@@ -31,5 +33,8 @@ export let POOL_ADDRESSES: string[] = [
   '0xf56f51a3bfd44de9810acdc1d91cd307e3b8d483',
   '0xc6bf421e982648690070330e4664bd4876719493',
   '0xcef88b5e67152a7a8c0840129d33e6912e4c7e4e',
-  '0x5d5c172ca2ae09ba5204af377be192bec880dac4'
+  '0x5d5c172ca2ae09ba5204af377be192bec880dac4',
+  '0xb587996d7949781a9fc7db29bf309b74762ce627', // USDT USDC (up until Feb 14th)
+  '0x32ebf0f0abee33b18be321a5af66e9e1ba4e3b56', // USDT USDC (up until Feb 14th)
+  '0x476a9e1cb5176261aafca2fe16655597ed84c96c' // USDT USDC (up until Feb 14th)
 ]

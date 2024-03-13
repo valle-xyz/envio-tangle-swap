@@ -229,7 +229,7 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
   }
 
   const derivedEthToken0 = await findEthPerToken(token0, context)
-  const totalValueLockedToken0 = BigInt(pool.totalValueLockedToken0) + event.params.amount0
+  const totalValueLockedToken0 = BigInt(token0.totalValueLocked) + event.params.amount0
 
   context.Token.set({
     ...token0,
@@ -240,7 +240,7 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
   })
 
   const derivedEthToken1 = await findEthPerToken(token1, context)
-  const totalValueLockedToken1 = BigInt(pool.totalValueLockedToken1) + event.params.amount1
+  const totalValueLockedToken1 = BigInt(token1.totalValueLocked) + event.params.amount1
 
   context.Token.set({
     ...token1,
