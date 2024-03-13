@@ -28,7 +28,7 @@ export let WHITELIST_TOKENS: string[] = [
   '0x83b090759017EFC9cB4d9E45B813f5D5CbBFeb95' // FUEL
 ]
 
-let MINIMUM_ETH_LOCKED = 4
+let MINIMUM_ETH_LOCKED = 0
 
 let Q192: number = 2 ** 192
 export function sqrtPriceX96ToTokenPrices (sqrtPriceX96: bigint, token0: TokenEntity, token1: TokenEntity): number[] {
