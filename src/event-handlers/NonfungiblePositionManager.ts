@@ -9,6 +9,7 @@ import {
 } from '../../generated/src/Handlers.gen'
 import { type PositionEntity, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_DecreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs, type eventLog, type NonfungiblePositionManagerContract_TransferEvent_handlerContext, type NonfungiblePositionManagerContract_TransferEvent_eventArgs } from '../src/Types.gen'
 import { convertTokenToDecimal } from '../utils'
+import { sqrtPriceX96ToTokenPrices } from '../utils/pricing'
 
 NonfungiblePositionManagerContract_IncreaseLiquidity_loader(({ event, context }) => {
   context.Position.load(event.params.tokenId.toString(), {})
@@ -77,8 +78,14 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
     })
   }
 
+  // we only set this at increase event, to make sure every pool has a token price
+  // does not actually change on increase or decrease
+  const [token0Price, token1Price] = sqrtPriceX96ToTokenPrices(pool.sqrtPrice, token0, token1)
   pool = {
     ...pool,
+    liquidity: pool.liquidity + event.params.liquidity,
+    token0Price,
+    token1Price,
     totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) + event.params.amount0,
     totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) + event.params.amount1
   }
@@ -155,6 +162,7 @@ NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync(async ({ event
 
   const newPool = {
     ...pool,
+    liquidity: pool.liquidity - event.params.liquidity,
     totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) - event.params.amount0,
     totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) - event.params.amount1
   }
