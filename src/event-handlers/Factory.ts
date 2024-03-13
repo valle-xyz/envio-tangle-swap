@@ -15,6 +15,7 @@ FactoryContract_PoolCreated_loader(({ event, context }) => {
   context.Factory.load(FACTORY_ADDRESS)
   context.Token.load(event.params.token0)
   context.Token.load(event.params.token1)
+  context.Bundle.load('1')
 })
 
 FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
@@ -42,7 +43,8 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
     const bundle: BundleEntity = {
       id: '1',
       ethPriceUSD: ZERO_BD,
-      allPositionIds: ''
+      allPositionIds: '',
+      allTokenIds: ''
     }
     context.Bundle.set(bundle)
   }
@@ -82,6 +84,17 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
       poolCount: ZERO_BI,
       whitelistPoolIds: ''
     }
+
+    // add new token0 id to bundle
+    const tempBundle = await context.Bundle.get('1')
+    if (tempBundle === undefined) {
+      context.log.error('Bundle was undefined')
+      return
+    }
+    context.Bundle.set({
+      ...tempBundle,
+      allTokenIds: tempBundle.allTokenIds === '' ? event.params.token0 : tempBundle.allTokenIds.concat(',', event.params.token0)
+    })
   }
   context.Token.set({
     ...token0,
@@ -116,6 +129,17 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
       poolCount: ZERO_BI,
       whitelistPoolIds: ''
     }
+
+    // add new token0 id to bundle
+    const tempBundle = await context.Bundle.get('1')
+    if (tempBundle === undefined) {
+      context.log.error('Bundle was undefined')
+      return
+    }
+    context.Bundle.set({
+      ...tempBundle,
+      allTokenIds: tempBundle.allTokenIds === '' ? event.params.token1 : tempBundle.allTokenIds.concat(',', event.params.token1)
+    })
   }
   context.Token.set({
     ...token1,

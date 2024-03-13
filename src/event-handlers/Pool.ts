@@ -323,4 +323,23 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
     }
     context.UserHourData.set(userHourData)
   }
+
+  // Update all token :)
+  const allTokenIds = bundle.allTokenIds.split(',')
+  for (const tokenId of allTokenIds) {
+    const token = await context.Token.get(tokenId)
+
+    if (token === undefined) {
+      context.log.error('Token not found at update all: ' + tokenId)
+      continue
+    }
+
+    const derivedEth = await findEthPerToken(token, context)
+
+    context.Token.set({
+      ...token,
+      derivedETH: derivedEth,
+      derivedUSD: derivedEth * ethPriceUSD
+    })
+  }
 })

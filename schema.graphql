@@ -35,6 +35,7 @@ type Bundle @entity {
   ethPriceUSD: Float!
   # unsexy, but necessary as loading many entities is not yet supported
   allPositionIds: String!
+  allTokenIds: String!
 }
 
 type Token @entity {

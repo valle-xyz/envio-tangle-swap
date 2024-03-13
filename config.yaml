@@ -13,6 +13,7 @@ contracts:
         requiredEntities:
           - name: Pool
           - name: Factory
+          - name: Bundle
           - name: Token
           - name: TokenPoolWhitelist
   - name: NonfungiblePositionManager
