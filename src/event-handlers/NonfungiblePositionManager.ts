@@ -32,7 +32,7 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
     return
   }
 
-  const pool = await context.PoolPosition.getPool(lastPoolPosition)
+  let pool = await context.PoolPosition.getPool(lastPoolPosition)
 
   if (pool === undefined) {
     context.log.error('Pool not found')
@@ -67,21 +67,22 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
       tickUpper: lastPoolPosition.tickUpper
     } satisfies PositionEntity
 
-    // update pool positionIds
-    const newPool = {
-      ...pool,
-      totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) + event.params.amount0,
-      totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) + event.params.amount1,
-      positionIds: pool.positionIds === '' ? tokenId.toString() : pool.positionIds.concat(',', tokenId)
-    }
-    context.Pool.set(newPool)
+    // add positionId to pool positionIds
+    pool = { ...pool, positionIds: pool.positionIds === '' ? tokenId.toString() : pool.positionIds.concat(',', tokenId) }
 
-    // add positionId to bundle
+    // add positionId to bundle allPositionIds
     context.Bundle.set({
       ...bundle,
       allPositionIds: bundle.allPositionIds === '' ? tokenId.toString() : bundle.allPositionIds.concat(',', tokenId)
     })
   }
+
+  pool = {
+    ...pool,
+    totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) + event.params.amount0,
+    totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) + event.params.amount1
+  }
+  context.Pool.set(pool)
 
   // const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
   // const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
