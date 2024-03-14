@@ -234,7 +234,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
       withdrawnToken1: 0n,
       amount0: 0n,
       amount1: 0n,
-      totalValueLockedUSD: 0n
+      totalValueLockedUSD: 0
     } satisfies PositionEntity
   }
 
