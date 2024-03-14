@@ -55,7 +55,7 @@ describe('Transfers', () => {
       token1_id: '0xeCE555d37C37D55a6341b80cF35ef3BC57401d1A',
       withdrawnToken0: 0n,
       withdrawnToken1: 0n,
-      totalValueLockedUSD: 0n
+      totalValueLockedUSD: 0
     }
 
     const swapEvent = Pool.Swap.createMockEvent({

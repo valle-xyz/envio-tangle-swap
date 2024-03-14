@@ -78,17 +78,20 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
     })
   }
 
-  // we only set this at increase event, to make sure every pool has a token price
-  // does not actually change on increase or decrease
-  const [token0Price, token1Price] = sqrtPriceX96ToTokenPrices(pool.sqrtPrice, token0, token1)
   pool = {
     ...pool,
     liquidity: pool.liquidity + event.params.liquidity,
-    token0Price,
-    token1Price,
     totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) + event.params.amount0,
     totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) + event.params.amount1
   }
+
+  if (pool.sqrtPrice !== 0n && pool.token0Price === 0) {
+    // we only set this at increase event, to make sure every pool has a token price
+    // does not actually change on increase or decrease
+    const [token0Price, token1Price] = sqrtPriceX96ToTokenPrices(pool.sqrtPrice, token0, token1)
+    pool = { ...pool, token0Price, token1Price }
+  }
+
   context.Pool.set(pool)
 
   // const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
@@ -234,7 +237,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
       withdrawnToken1: 0n,
       amount0: 0n,
       amount1: 0n,
-      totalValueLockedUSD: 0n
+      totalValueLockedUSD: 0
     } satisfies PositionEntity
   }
 
