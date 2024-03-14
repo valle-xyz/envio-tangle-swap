@@ -94,9 +94,6 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
 
   context.Pool.set(pool)
 
-  // const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
-  // const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
-
   const newPosition = {
     ...position,
     liquidity: position.liquidity + event.params.liquidity,
