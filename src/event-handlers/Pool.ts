@@ -204,28 +204,6 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
     }
 
     context.Position.set(newPosition)
-
-    // set later for all positions
-    // context.PositionSnapshot.set({
-    //   id: position.id.concat('#').concat(event.blockNumber.toString()),
-    //   owner: position.owner,
-    //   pool_id: position.pool_id,
-    //   position_id: position.id,
-    //   blockNumber: BigInt(event.blockNumber),
-    //   timestamp: BigInt(event.blockTimestamp),
-    //   liquidity: position.liquidity,
-    //   depositedToken0: position.depositedToken0,
-    //   depositedToken1: position.depositedToken1,
-    //   withdrawnToken0: position.withdrawnToken0,
-    //   withdrawnToken1: position.withdrawnToken1,
-    //   // collectedFeesToken0: position.collectedFeesToken0,
-    //   // collectedFeesToken1: position.collectedFeesToken1,
-    //   transaction_id: 'tx',
-    //   amount0: token0Amount,
-    //   amount1: token1Amount
-    // // feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
-    // // feeGrowthInside1LastX128: position.feeGrowthInside1LastX128
-    // })
   }
 
   const derivedEthToken0 = await findEthPerToken(token0, context)
