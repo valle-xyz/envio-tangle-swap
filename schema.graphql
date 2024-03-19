@@ -160,6 +160,7 @@ type Pool @entity {
   whitelistPools: [TokenPoolWhitelist!]! @derivedFrom(field: "pool")
   positions: [Position!]! @derivedFrom(field: "pool")
   positionIds: String!
+  isWhitelisted: Boolean!
 }
 
 type Tick @entity {

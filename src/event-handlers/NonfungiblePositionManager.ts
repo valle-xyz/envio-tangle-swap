@@ -7,9 +7,10 @@ import {
   NonfungiblePositionManagerContract_Transfer_handler,
   NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync
 } from '../../generated/src/Handlers.gen'
-import { type PositionEntity, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_DecreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs, type eventLog, type NonfungiblePositionManagerContract_TransferEvent_handlerContext, type NonfungiblePositionManagerContract_TransferEvent_eventArgs } from '../src/Types.gen'
+import { type PositionEntity } from '../src/Types.gen'
 import { convertTokenToDecimal } from '../utils'
 import { sqrtPriceX96ToTokenPrices } from '../utils/pricing'
+import { savePositionSnapshot } from './helpers/savePositionSnapshot'
 
 NonfungiblePositionManagerContract_IncreaseLiquidity_loader(({ event, context }) => {
   context.Position.load(event.params.tokenId.toString(), {})
@@ -93,9 +94,6 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
   }
 
   context.Pool.set(pool)
-
-  // const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
-  // const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
 
   const newPosition = {
     ...position,
@@ -268,29 +266,3 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
 //   }
 //   return position
 // }
-
-function savePositionSnapshot (position: PositionEntity,
-  event: eventLog<NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs> | eventLog<NonfungiblePositionManagerContract_TransferEvent_eventArgs>,
-  context: NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_DecreaseLiquidityEvent_handlerContextAsync | NonfungiblePositionManagerContract_TransferEvent_handlerContext
-): void {
-  context.PositionSnapshot.set({
-    id: position.id.concat('#').concat(event.blockNumber.toString()),
-    owner: position.owner,
-    pool_id: position.pool_id,
-    position_id: position.id,
-    blockNumber: BigInt(event.blockNumber),
-    timestamp: BigInt(event.blockTimestamp),
-    liquidity: position.liquidity,
-    depositedToken0: position.depositedToken0,
-    depositedToken1: position.depositedToken1,
-    withdrawnToken0: position.withdrawnToken0,
-    withdrawnToken1: position.withdrawnToken1,
-    // collectedFeesToken0: position.collectedFeesToken0,
-    // collectedFeesToken1: position.collectedFeesToken1,
-    transaction_id: 'tx',
-    amount0: position.amount0,
-    amount1: position.amount1
-    // feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
-    // feeGrowthInside1LastX128: position.feeGrowthInside1LastX128
-  })
-}

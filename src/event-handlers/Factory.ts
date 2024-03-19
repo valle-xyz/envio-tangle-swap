@@ -3,11 +3,10 @@ import {
   FactoryContract_PoolCreated_loader
 } from '../../generated/src/Handlers.gen'
 
-import { ADDRESS_ZERO, FACTORY_ADDRESS, ZERO_BD, ZERO_BI } from '../utils/constants'
+import { ADDRESS_ZERO, FACTORY_ADDRESS, POOL_ADDRESSES, ZERO_BD, ZERO_BI } from '../utils/constants'
 
 import { type TokenEntity, type BundleEntity, type FactoryEntity, type PoolEntity } from '../../generated/src/Types.gen'
 import { fetchTokenDetails } from '../utils/token'
-import { WHITELIST_TOKENS } from '../utils/pricing'
 
 FactoryContract_PoolCreated_loader(({ event, context }) => {
   context.contractRegistration.addPool(event.params.pool)
@@ -146,6 +145,10 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
     whitelistPoolIds: token0.whitelistPoolIds === '' ? event.params.pool : token0.whitelistPoolIds.concat(',', event.params.pool)
   })
 
+  const isWhitelisted = POOL_ADDRESSES.includes(event.params.pool.toLowerCase())
+
+  context.log.info('Pool ' + event.params.pool.toLowerCase() + ' is whitelisted: ' + isWhitelisted)
+
   // create new pool
   const poolEntity: PoolEntity = {
     id: event.params.pool,
@@ -177,16 +180,9 @@ FactoryContract_PoolCreated_handlerAsync(async ({ event, context }) => {
     createdAtBlockNumber: 0n,
     volumeToken1: 0,
     createdAtTimestamp: BigInt(event.blockTimestamp),
-    positionIds: ''
+    positionIds: '',
+    isWhitelisted
   }
 
   context.Pool.set(poolEntity)
-
-  // update white listed pools
-  if (WHITELIST_TOKENS.includes(token0.id)) {
-    context.TokenPoolWhitelist.set({ id: `${token0.id}-${poolEntity.id}`, token_id: token0.id, pool_id: poolEntity.id })
-  }
-  if (WHITELIST_TOKENS.includes(token1.id)) {
-    context.TokenPoolWhitelist.set({ id: `${token1.id}-${poolEntity.id}`, token_id: token1.id, pool_id: poolEntity.id })
-  }
 })
