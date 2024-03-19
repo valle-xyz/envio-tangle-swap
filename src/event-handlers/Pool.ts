@@ -204,32 +204,10 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
     }
 
     context.Position.set(newPosition)
-
-    // set later for all positions
-    // context.PositionSnapshot.set({
-    //   id: position.id.concat('#').concat(event.blockNumber.toString()),
-    //   owner: position.owner,
-    //   pool_id: position.pool_id,
-    //   position_id: position.id,
-    //   blockNumber: BigInt(event.blockNumber),
-    //   timestamp: BigInt(event.blockTimestamp),
-    //   liquidity: position.liquidity,
-    //   depositedToken0: position.depositedToken0,
-    //   depositedToken1: position.depositedToken1,
-    //   withdrawnToken0: position.withdrawnToken0,
-    //   withdrawnToken1: position.withdrawnToken1,
-    //   // collectedFeesToken0: position.collectedFeesToken0,
-    //   // collectedFeesToken1: position.collectedFeesToken1,
-    //   transaction_id: 'tx',
-    //   amount0: token0Amount,
-    //   amount1: token1Amount
-    // // feeGrowthInside0LastX128: position.feeGrowthInside0LastX128,
-    // // feeGrowthInside1LastX128: position.feeGrowthInside1LastX128
-    // })
   }
 
   const derivedEthToken0 = await findEthPerToken(token0, context)
-  const totalValueLockedToken0 = BigInt(pool.totalValueLockedToken0) + event.params.amount0
+  const totalValueLockedToken0 = BigInt(token0.totalValueLocked) + event.params.amount0
 
   context.Token.set({
     ...token0,
@@ -240,7 +218,7 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
   })
 
   const derivedEthToken1 = await findEthPerToken(token1, context)
-  const totalValueLockedToken1 = BigInt(pool.totalValueLockedToken1) + event.params.amount1
+  const totalValueLockedToken1 = BigInt(token1.totalValueLocked) + event.params.amount1
 
   context.Token.set({
     ...token1,
@@ -322,5 +300,24 @@ PoolContract_Swap_handlerAsync(async ({ event, context }) => {
       }
     }
     context.UserHourData.set(userHourData)
+  }
+
+  // Update all token :)
+  const allTokenIds = bundle.allTokenIds.split(',')
+  for (const tokenId of allTokenIds) {
+    const token = await context.Token.get(tokenId)
+
+    if (token === undefined) {
+      context.log.error('Token not found at update all: ' + tokenId)
+      continue
+    }
+
+    const derivedEth = await findEthPerToken(token, context)
+
+    context.Token.set({
+      ...token,
+      derivedETH: derivedEth,
+      derivedUSD: derivedEth * ethPriceUSD
+    })
   }
 })

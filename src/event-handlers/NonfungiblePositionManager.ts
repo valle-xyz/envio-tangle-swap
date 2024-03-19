@@ -9,6 +9,7 @@ import {
 } from '../../generated/src/Handlers.gen'
 import { type PositionEntity, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_DecreaseLiquidityEvent_handlerContextAsync, type NonfungiblePositionManagerContract_IncreaseLiquidityEvent_eventArgs, type eventLog, type NonfungiblePositionManagerContract_TransferEvent_handlerContext, type NonfungiblePositionManagerContract_TransferEvent_eventArgs } from '../src/Types.gen'
 import { convertTokenToDecimal } from '../utils'
+import { sqrtPriceX96ToTokenPrices } from '../utils/pricing'
 
 NonfungiblePositionManagerContract_IncreaseLiquidity_loader(({ event, context }) => {
   context.Position.load(event.params.tokenId.toString(), {})
@@ -32,7 +33,7 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
     return
   }
 
-  const pool = await context.PoolPosition.getPool(lastPoolPosition)
+  let pool = await context.PoolPosition.getPool(lastPoolPosition)
 
   if (pool === undefined) {
     context.log.error('Pool not found')
@@ -67,24 +68,31 @@ NonfungiblePositionManagerContract_IncreaseLiquidity_handlerAsync(async ({ event
       tickUpper: lastPoolPosition.tickUpper
     } satisfies PositionEntity
 
-    // update pool positionIds
-    const newPool = {
-      ...pool,
-      totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) + event.params.amount0,
-      totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) + event.params.amount1,
-      positionIds: pool.positionIds === '' ? tokenId.toString() : pool.positionIds.concat(',', tokenId)
-    }
-    context.Pool.set(newPool)
+    // add positionId to pool positionIds
+    pool = { ...pool, positionIds: pool.positionIds === '' ? tokenId.toString() : pool.positionIds.concat(',', tokenId) }
 
-    // add positionId to bundle
+    // add positionId to bundle allPositionIds
     context.Bundle.set({
       ...bundle,
       allPositionIds: bundle.allPositionIds === '' ? tokenId.toString() : bundle.allPositionIds.concat(',', tokenId)
     })
   }
 
-  // const amount0 = convertTokenToDecimal(event.params.amount0, token0.decimals)
-  // const amount1 = convertTokenToDecimal(event.params.amount1, token1.decimals)
+  pool = {
+    ...pool,
+    liquidity: pool.liquidity + event.params.liquidity,
+    totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) + event.params.amount0,
+    totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) + event.params.amount1
+  }
+
+  if (pool.sqrtPrice !== 0n && pool.token0Price === 0) {
+    // we only set this at increase event, to make sure every pool has a token price
+    // does not actually change on increase or decrease
+    const [token0Price, token1Price] = sqrtPriceX96ToTokenPrices(pool.sqrtPrice, token0, token1)
+    pool = { ...pool, token0Price, token1Price }
+  }
+
+  context.Pool.set(pool)
 
   const newPosition = {
     ...position,
@@ -154,6 +162,7 @@ NonfungiblePositionManagerContract_DecreaseLiquidity_handlerAsync(async ({ event
 
   const newPool = {
     ...pool,
+    liquidity: pool.liquidity - event.params.liquidity,
     totalValueLockedToken0: BigInt(pool.totalValueLockedToken0) - event.params.amount0,
     totalValueLockedToken1: BigInt(pool.totalValueLockedToken1) - event.params.amount1
   }
@@ -225,7 +234,7 @@ NonfungiblePositionManagerContract_Transfer_handler(({ event, context }) => {
       withdrawnToken1: 0n,
       amount0: 0n,
       amount1: 0n,
-      totalValueLockedUSD: 0n
+      totalValueLockedUSD: 0
     } satisfies PositionEntity
   }
 
