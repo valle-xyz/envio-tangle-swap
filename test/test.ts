@@ -36,7 +36,8 @@ describe('Transfers', () => {
       txCount: 0n,
       createdAtTimestamp: 1704635259n,
       createdAtBlockNumber: 0n,
-      liquidityProviderCount: 0n
+      liquidityProviderCount: 0n,
+      isWhitelisted: false
     }
 
     const positionBefore = {
